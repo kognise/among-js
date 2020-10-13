@@ -2,14 +2,17 @@ import { Vector2 } from '../util/vector'
 import { GameDataType, GameSetting, PayloadType, RPCFlag } from './enum'
 
 // Payload packets
+// https://wiki.weewoo.net/wiki/Protocol#Reliable_Packets
 export type PayloadPacket = GameDataPayloadPacket | GameDataToPayloadPacket | JoinedGamePayloadPacket | RedirectPayloadPacket | JoinGameErrorPayloadPacket | JoinGameRequestPayloadPacket
 
+// https://wiki.weewoo.net/wiki/Protocol#5.2C_6_-_Game_Data_and_Game_Data_To
 export interface GameDataPayloadPacket {
   type: PayloadType.GameData,
   code: number,
   parts: GameDataPacket[]
 }
 
+// https://wiki.weewoo.net/wiki/Protocol#5.2C_6_-_Game_Data_and_Game_Data_To
 export interface GameDataToPayloadPacket {
   type: PayloadType.GameDataTo,
   code: number,
@@ -17,6 +20,7 @@ export interface GameDataToPayloadPacket {
   parts: GameDataPacket[]
 }
 
+// TODO: Document
 export interface JoinedGamePayloadPacket {
   type: PayloadType.JoinedGame,
   code: number,
@@ -24,16 +28,19 @@ export interface JoinedGamePayloadPacket {
   hostId: number
 }
 
+// https://wiki.weewoo.net/wiki/Protocol#Server_To_Client
 export interface JoinGameErrorPayloadPacket {
   type: PayloadType.JoinGame,
   reason: Error
 }
 
+// https://wiki.weewoo.net/wiki/Protocol#Client_To_Server
 export interface JoinGameRequestPayloadPacket {
   type: PayloadType.JoinGame,
   code: number
 }
 
+// https://wiki.weewoo.net/wiki/Protocol#13_-_Redirect
 export interface RedirectPayloadPacket {
   type: PayloadType.Redirect,
   port: number,
@@ -41,8 +48,10 @@ export interface RedirectPayloadPacket {
 }
 
 // Game data packets
+// https://wiki.weewoo.net/wiki/Protocol#5.2C_6_-_Game_Data_and_Game_Data_To
 export type GameDataPacket = RPCGameDataPacket | SpawnGameDataPacket | DataGameDataPacket | SceneChangeGameDataPacket
 
+// https://wiki.weewoo.net/wiki/Protocol#2_-_RPC_Game_Data
 export interface RPCGameDataPacket {
   type: GameDataType.RPC,
   netId: number,
@@ -50,6 +59,7 @@ export interface RPCGameDataPacket {
   data: ByteBuffer
 }
 
+// https://wiki.weewoo.net/wiki/Protocol#4_-_Spawn
 export interface SpawnGameDataPacket {
   type: GameDataType.Spawn,
   spawnId: number,
@@ -58,6 +68,7 @@ export interface SpawnGameDataPacket {
   components: GameComponent[]
 }
 
+// https://wiki.weewoo.net/wiki/Protocol#1_-_Data
 export interface DataGameDataPacket {
   type: GameDataType.Data,
   netId: number,
@@ -66,6 +77,7 @@ export interface DataGameDataPacket {
   velocity: Vector2
 }
 
+// https://wiki.weewoo.net/wiki/Protocol#6_-_Scene_Change
 export interface SceneChangeGameDataPacket {
   type: GameDataType.SceneChange,
   playerId: number,
@@ -73,6 +85,7 @@ export interface SceneChangeGameDataPacket {
 }
 
 // Game component
+// https://wiki.weewoo.net/wiki/Components
 export interface GameComponent {
   netId: number,
   data: ByteBuffer

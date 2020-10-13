@@ -5,6 +5,9 @@ import ByteBuffer from 'bytebuffer'
 import { assertJoinGameRequestPayloadPacket } from './assertions'
 import { pack } from '../util/manipulation'
 
+// You'll regret reading this, but if you have to these are functions
+// for generating raw packets from fancy objects.
+
 const generateDataGameDataPacket = (packet: DataGameDataPacket): ByteBuffer => {
   const buffer = new ByteBuffer(14, true)
   buffer.writeInt16(11)

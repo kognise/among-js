@@ -1,3 +1,5 @@
+// Base packet types.
+// https://wiki.weewoo.net/wiki/Protocol
 export enum PacketType {
   Normal = 0,
   Reliable = 1,
@@ -7,6 +9,8 @@ export enum PacketType {
   Ping = 12
 }
 
+// Packet payload types.
+// https://wiki.weewoo.net/wiki/Protocol#Reliable_Packets
 export enum PayloadType {
   CreateGame = 0,
   JoinGame,
@@ -26,6 +30,8 @@ export enum PayloadType {
   GetGameListV2 = 16
 }
 
+// Game data (and game data to) types.
+// https://wiki.weewoo.net/wiki/Protocol#5.2C_6_-_Game_Data_and_Game_Data_To
 export enum GameDataType {
   Data = 1,
   RPC,
@@ -36,6 +42,8 @@ export enum GameDataType {
   ChangeSettings
 }
 
+// RPC instruction types.
+// https://wiki.weewoo.net/wiki/Protocol#2_-_RPC_Game_Data
 export enum RPCFlag {
   PlayAnimation = 0,
   CompleteTask,
@@ -107,6 +115,9 @@ export enum PlayerColor {
   Cyan,
   Lime
 }
+
+// Below this line are just functions to convert enums into human-readable
+// names for debugging.
 
 export const prettyPayloadType = (type: PayloadType) => {
   switch (type) {

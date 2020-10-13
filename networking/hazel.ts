@@ -4,11 +4,12 @@ import { PacketType, prettyDisconnectReason } from '../packets/enum'
 import { EventEmitter } from 'events'
 import consola from 'consola'
 
-export declare interface HazelUdpSocket {
+export declare interface HazelUDPSocket {
   on(event: 'message', cb: (buffer: ByteBuffer) => void): this
 }
 
-export class HazelUdpSocket extends EventEmitter {
+// Implementation of the Hazel base protocol.
+export class HazelUDPSocket extends EventEmitter {
   private s: dgram.Socket
   private reliableId: number = 0
 
@@ -22,12 +23,13 @@ export class HazelUdpSocket extends EventEmitter {
       this.s.close()
     })
     
+    // Setup listeners for various packet types.
     this.s.on('message', (msg) => {
       const packetType: PacketType = msg[0]
 
       switch (packetType) {
         case PacketType.Acknowledgement: {
-          consola.debug(`(Acknowledgement)`)
+          // TODO: Actually check acknowledgement packets for reliability.
           break
         }
 
@@ -62,6 +64,10 @@ export class HazelUdpSocket extends EventEmitter {
   }
 
   private handleReliableResponse(buffer: Buffer) {
+    // Reliable packets require an acknowledgement packet in response
+    // or the server will throw a tantrum.
+    // https://wiki.weewoo.net/wiki/Protocol#Acknowledgement
+
     const reliableId = (buffer[1] << 8) + buffer[2]
     const bb = new ByteBuffer(4)
     bb.writeByte(PacketType.Acknowledgement)
@@ -71,6 +77,9 @@ export class HazelUdpSocket extends EventEmitter {
   }
 
   private handlePayloadPacket(buffer: Buffer, offset: number) {
+    // Generic handler for packets with payloads, for both reliable
+    // and normal packets.
+
     const bb = new ByteBuffer(buffer.length - offset, true)
     bb.append(buffer.slice(offset))
     bb.clear()
@@ -78,6 +87,8 @@ export class HazelUdpSocket extends EventEmitter {
   }
 
   private async waitForAcknowledgement(reliableId: number) {
+    // Hacky helper to wait for an acknowledgement before continuing.
+
     await new Promise((resolve) => {
       const cb = (msg: Buffer) => {
         const packetType: PacketType = msg[0]
@@ -95,12 +106,17 @@ export class HazelUdpSocket extends EventEmitter {
   }
 
   connect(port: number, ip?: string) {
+    // Bind the socket to an ip and port.
     return new Promise((resolve) => {
       this.s.connect(port, ip, () => resolve())
     })
   }
 
   async sendReliable(sendOption: PacketType, data: ByteBuffer) {
+    // Helper for sending reliable packer. Automatically handles waiting for
+    // acknowledgements and incrementing the reliable id.
+    // https://wiki.weewoo.net/wiki/Protocol#Reliable_Packets
+
     const reliableId = ++this.reliableId
     const bb = new ByteBuffer(3 + data.capacity())
     bb.writeByte(sendOption)
@@ -113,6 +129,8 @@ export class HazelUdpSocket extends EventEmitter {
   }
 
   send(bb: ByteBuffer) {
+    // Just a simple wrapper for asyncronously sending ByteBuffer packets.
+
     return new Promise((resolve, reject) => {
       this.s.send(bb.buffer, (err) => {
         if (err) {
@@ -125,6 +143,11 @@ export class HazelUdpSocket extends EventEmitter {
   }
 
   async disconnect() {
+    // Disconnect cleanly by sending a disconnect packet and
+    // waiting for a response. Otherwise the next time we try
+    // to connect the server won't respond to the hello.
+    // https://wiki.weewoo.net/wiki/Protocol#Disconnect
+
     const dc = new ByteBuffer(1)
     dc.writeByte(9)
 

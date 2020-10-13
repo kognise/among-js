@@ -4,13 +4,15 @@ import { Vector2 } from '../util/vector'
 import { GameDataType, PayloadType, prettyDisconnectReason, prettyGameDataType, prettyPayloadType, RPCFlag } from './enum'
 import { GameDataPacket, GameComponent, GameDataPayloadPacket, PayloadPacket, RPCGameDataPacket, SpawnGameDataPacket, DataGameDataPacket } from './types'
 
+// You'll regret reading this, but if you have to these are functions
+// for parsing raw packets into fancy objects.
+
 const parseRPCGameDataPacket = (buffer: ByteBuffer, dataLength: number): RPCGameDataPacket => {
-  // const netId = buffer.readByte()
   const flag: RPCFlag = buffer.readByte()
   const data = buffer.readBytes(dataLength - 1)
   return {
     type: GameDataType.RPC,
-    netId: 0,
+    netId: -1, // No net id provided for incoming rpc packets?
     flag,
     data
   }

@@ -1,5 +1,5 @@
 import consola from 'consola'
-import { AmongUsSocket } from './networking/amongus'
+import { AmongUsSocket } from './networking/among-us'
 import { PlayerColor } from './packets/enum'
 
 const code = 'AHNCJF'
@@ -16,7 +16,9 @@ const s = new AmongUsSocket(username)
   consola.success(`Joined game ${code}`)
   consola.info(`Player id: ${joined.playerId}, host id: ${joined.hostId}`)
 
+  // Spawn the player with an username + avatar
   await s.spawn(color)
+  consola.success('Spawned player')
 })().catch(consola.error)
 
 process.on('SIGINT', () => {

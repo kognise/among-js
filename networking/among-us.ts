@@ -1,8 +1,7 @@
 import { GameDataType, GameSetting, PacketType, PayloadType, PlayerColor, RPCFlag } from '../packets/enum'
-import { HazelUdpSocket } from './hazel'
+import { HazelUDPSocket } from './hazel'
 import { v2CodeToNumber } from '../util/codes'
 import ByteBuffer from 'bytebuffer'
-import { pack } from '../util/manipulation'
 import consola from 'consola'
 import { parsePayloads } from '../packets/parser'
 import { assertJoinGameErrorPayloadPacket } from '../packets/assertions'
@@ -33,19 +32,22 @@ interface RedirectJoinResult {
 
 type JoinResult = JoinedJoinResult | ErrorJoinResult | RedirectJoinResult
 
+// Clean wrapper for the Among Us protocol.
+// (Well, the usage is clean, the internal code isn't.)
 export class AmongUsSocket {
-  s: HazelUdpSocket
+  s: HazelUDPSocket
   private name: string
   private game: Game | null = null
 
   constructor(name: string) {
     this.name = name
-    this.s = new HazelUdpSocket('udp4')
+    this.s = new HazelUDPSocket('udp4')
   }
 
   async connect(port: number, ip: string) {
     await this.s.connect(port, ip)
 
+    // Send a hello with a username and wait for the response.
     const hello = new ByteBuffer(6 + this.name.length)
     hello.writeByte(0)
     hello.writeInt32(0x46_D2_02_03)
@@ -55,6 +57,13 @@ export class AmongUsSocket {
   }
 
   private async tryJoin(code: string) {
+    // Shitty code to attempt joining a game. This will respond with
+    // one of three states:
+    // - Joined, meaning no further action must be taken
+    // - Redirect, meaning the current socket should be scrapped and
+    //   the join should be retried on the given ip and port
+    // - Error, meaning it should throw an error
+
     const promise = new Promise<JoinResult>((resolve) => {
       const cb = (buffer: ByteBuffer) => {
         const payloads = parsePayloads(buffer)
@@ -71,6 +80,7 @@ export class AmongUsSocket {
               }
             })
           } else if (payload.type === PayloadType.Redirect) {
+            this.s.off('message', cb)
             resolve({
               state: 'redirect',
               ip: payload.ip,
@@ -78,6 +88,7 @@ export class AmongUsSocket {
             })
           } else if (payload.type === PayloadType.JoinGame) {
             assertJoinGameErrorPayloadPacket(payload)
+
             this.s.off('message', cb)
             resolve({
               state: 'error',
@@ -90,6 +101,8 @@ export class AmongUsSocket {
       this.s.on('message', cb)
     })
 
+    // Actually send the join game packet now that the listener
+    // is set up.
     await this.s.sendReliable(PacketType.Reliable, generatePayloads([
       {
         type: PayloadType.JoinGame,
@@ -101,6 +114,8 @@ export class AmongUsSocket {
   }
 
   async joinGame(code: string) {
+    // Join a game and handle redirects and such. Uses tryJoin.
+
     let joinResult: JoinResult
 
     while (true) {
@@ -115,13 +130,15 @@ export class AmongUsSocket {
       if (joinResult.state === 'redirect') {
         consola.info(`Redirecting to ${joinResult.ip}:${joinResult.port}`)
         await this.s.disconnect()
-        this.s = new HazelUdpSocket('udp4')
+        this.s = new HazelUDPSocket('udp4')
         await this.connect(joinResult.port, joinResult.ip)
       }
     }
   }
 
   async spawn(color: PlayerColor) {
+    // Spawn the player with an avatar and username.
+
     this.s.on('message', async (buffer) => {
       const payloads = parsePayloads(buffer)
       
@@ -129,7 +146,12 @@ export class AmongUsSocket {
         if (payload.type === PayloadType.GameData) {
           for (const part of payload.parts) {
             if (part.type === GameDataType.Spawn) {
-              consola.info('Spawned')
+              // When a spawn packet is received, send a two-part payload with the
+              // desired username and color. The actual game sends these as two payloads
+              // but this is equivalent.
+
+              // Technically, I should check what it's actually spawning and add other logic
+              // here, but I'm lazy so I'll do that when something breaks.
 
               await this.s.sendReliable(PacketType.Reliable, generatePayloads([
                 {
@@ -161,6 +183,7 @@ export class AmongUsSocket {
       }
     })
 
+    // Listener is setup, so request a scene change to get a spawn point.
     await this.s.sendReliable(PacketType.Reliable, generatePayloads([
       {
         type: PayloadType.GameData,
