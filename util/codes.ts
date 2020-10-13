@@ -1,3 +1,5 @@
+// https://wiki.weewoo.net/wiki/Game_Codes
+
 const v2LookupTable: Record<number, number> = {
   [0]: 0x19,
   [1]: 0x15,
