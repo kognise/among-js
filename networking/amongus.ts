@@ -43,20 +43,6 @@ export class AmongUsSocket {
     this.s = new HazelUdpSocket('udp4')
   }
 
-  async sendGameData(data: ByteBuffer, to?: number) {
-    const packedTo = to ? pack(to) : Buffer.from([])
-    const bb = new ByteBuffer(7 + packedTo.length + data.capacity(), true)
-
-    bb.writeInt16(4 + (to ? 3 : 0) + data.capacity())
-    bb.writeByte(to ? PayloadType.GameDataTo : PayloadType.GameData)
-
-    bb.writeInt32(v2CodeToNumber(this.game!.code))
-    if (to) bb.append(packedTo)
-
-    bb.append(data.buffer)
-    await this.s.sendReliable(PacketType.Reliable, bb)
-  }
-
   async connect(port: number, ip: string) {
     await this.s.connect(port, ip)
 
