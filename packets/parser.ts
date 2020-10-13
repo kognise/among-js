@@ -134,7 +134,7 @@ export const parsePayloads = (buffer: ByteBuffer): PayloadPacket[] => {
 
       case PayloadType.Redirect: {
         const ip = `${buffer.readUint8()}.${buffer.readUint8()}.${buffer.readUint8()}.${buffer.readUint8()}`
-        const port = buffer.readInt16()
+        const port = buffer.readUint16()
 
         packets.push({
           type: payloadType,
