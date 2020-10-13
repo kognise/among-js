@@ -16,12 +16,13 @@ const s = new AmongUsSocket(username)
   consola.success(`Joined game ${code}`)
   consola.info(`Player id: ${joined.playerId}, host id: ${joined.hostId}`)
 
-  // Spawn the player with an username + avatar
+  // Spawn the player with an username + avatar.
   await s.spawn(color)
   consola.success('Spawned player')
 })().catch(consola.error)
 
 process.on('SIGINT', () => {
+  // Clean up the socket cleanly to avoid reconnection issues.
   consola.info('Closing sockets')
   s.s.disconnect()
   process.exit()
