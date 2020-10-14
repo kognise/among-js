@@ -1,6 +1,6 @@
 {
   "name": "@among-js/packets",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Among JS packet parsing and serialization",
   "author": "Felix Mattick <felix.mattick@gmail.com>",
   "scripts": {
@@ -17,8 +17,8 @@
     "dist"
   ],
   "dependencies": {
-    "@among-js/data": "^0.0.4",
-    "@among-js/util": "^0.0.4",
+    "@among-js/data": "^0.0.5",
+    "@among-js/util": "^0.0.5",
     "bytebuffer": "^5.0.1",
     "tslib": "^2.0.0"
   },
