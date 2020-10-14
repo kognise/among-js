@@ -1,6 +1,6 @@
 {
   "name": "@among-js/util",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "description": "Among JS helper functions",
   "author": "Felix Mattick <felix.mattick@gmail.com>",
   "scripts": {
@@ -17,8 +17,8 @@
     "dist"
   ],
   "dependencies": {
-    "bytebuffer": "^5.0.1",
-    "tslib": "^2.0.0"
+    "tslib": "^2.0.0",
+    "bytebuffer": "^5.0.1"
   },
   "devDependencies": {
     "@types/bytebuffer": "^5.0.41"
