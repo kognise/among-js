@@ -1,6 +1,6 @@
 {
   "name": "@among-js/data",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Among JS game data",
   "author": "Felix Mattick <felix.mattick@gmail.com>",
   "scripts": {
