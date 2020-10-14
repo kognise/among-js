@@ -17,6 +17,7 @@
     "build": "lerna run build",
     "prepublish": "lerna run prepublish"
   },
+  "license": "AGPL-3.0-or-later",
   "dependencies": {
     "consola": "^2.15.0"
   }

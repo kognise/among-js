@@ -24,10 +24,12 @@
     "bytebuffer": "^5.0.1",
     "tslib": "^2.0.0"
   },
+  "license": "AGPL-3.0-or-later",
   "devDependencies": {
     "@types/bytebuffer": "^5.0.41"
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "gitHead": "133ac5f13b3d3f156b686eda69ac63e1c5337205"
 }

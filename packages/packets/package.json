@@ -27,5 +27,7 @@
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "license": "AGPL-3.0-or-later",
+  "gitHead": "133ac5f13b3d3f156b686eda69ac63e1c5337205"
 }
