@@ -1,8 +1,8 @@
+import assert from 'assert'
 import {
   JoinGameErrorPayloadPacket,
   JoinGameRequestPayloadPacket
 } from './types'
-import { assert } from 'console'
 
 // Assert that the packet is an error (server -> client)
 export function assertJoinGameErrorPayloadPacket(
