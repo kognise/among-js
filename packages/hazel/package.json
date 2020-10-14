@@ -1,6 +1,6 @@
 {
   "name": "@among-js/hazel",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Implementation of the Hazel protocol that powers Among Us",
   "author": "Felix Mattick <felix.mattick@gmail.com>",
   "scripts": {
@@ -17,9 +17,9 @@
     "dist"
   ],
   "dependencies": {
-    "@among-js/data": "^0.0.0",
-    "tslib": "^2.0.0",
-    "bytebuffer": "^5.0.1"
+    "@among-js/data": "^0.0.1",
+    "bytebuffer": "^5.0.1",
+    "tslib": "^2.0.0"
   },
   "devDependencies": {
     "@types/bytebuffer": "^5.0.41"
