@@ -83,7 +83,12 @@ export const prettyDisconnectReason = (reason: DisconnectReason) => {
   }
 }
 
+// @deprecated
 export const prettyRPCType = (type: RPCFlag) => {
+  console.warn(`prettyRPCType is deprecated, please use prettyRPCFlag instead`)
+  return prettyRPCFlag(type)
+}
+export const prettyRPCFlag = (type: RPCFlag) => {
   switch (type) {
     case RPCFlag.PlayAnimation:
       return 'PlayAnimation'

@@ -11,9 +11,11 @@ import {
   PayloadType,
   PayloadPacket,
   prettyDisconnectReason,
-  prettyPayloadType
+  prettyPayloadType,
+  prettyRPCFlag
 } from '@among-js/data'
 import { readPacked, Vector2 } from '@among-js/util'
+import { readGameOptions } from './game-options'
 
 const parseRPCGameDataPacket = (
   buffer: ByteBuffer,
@@ -21,12 +23,30 @@ const parseRPCGameDataPacket = (
 ): RPCGameDataPacket => {
   const netId = buffer.readByte()
   const flag: RPCFlag = buffer.readByte()
-  const data = buffer.readBytes(dataLength - 2)
-  return {
-    type: GameDataType.RPC,
-    netId,
-    flag,
-    data
+  
+  switch (flag) {
+    case RPCFlag.SyncSettings: {
+      return {
+        type: GameDataType.RPC,
+        netId,
+        flag,
+        gameOptions: readGameOptions(buffer)
+      }
+    }
+
+    default: {
+      console.warn(
+        `RPC packet of type ${prettyRPCFlag(flag)} wasn't parsed`
+      )
+
+      const data = buffer.readBytes(dataLength - 2)
+      return {
+        type: GameDataType.RPC,
+        netId,
+        flag,
+        data
+      }
+    }
   }
 }
 

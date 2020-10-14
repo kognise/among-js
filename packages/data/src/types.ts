@@ -3,7 +3,9 @@ import {
   GameDataType,
   SceneChangeLocation,
   PayloadType,
-  RPCFlag
+  RPCFlag,
+  Language,
+  AmongUsMap
 } from './enums'
 
 // Payload packets
@@ -66,14 +68,6 @@ export type GameDataPacket =
   | DataGameDataPacket
   | SceneChangeGameDataPacket
 
-// https://wiki.weewoo.net/wiki/Protocol#2_-_RPC_Game_Data
-export interface RPCGameDataPacket {
-  type: GameDataType.RPC
-  netId: number
-  flag: RPCFlag
-  data: ByteBuffer
-}
-
 // https://wiki.weewoo.net/wiki/Protocol#4_-_Spawn
 export interface SpawnGameDataPacket {
   type: GameDataType.Spawn
@@ -99,9 +93,53 @@ export interface SceneChangeGameDataPacket {
   location: SceneChangeLocation
 }
 
+// RPC
+// https://wiki.weewoo.net/wiki/Protocol#2_-_RPC_Game_Data
+export type RPCGameDataPacket =
+  | SyncSettingsGameDataPacket
+  | UnparsedRPCGameDataPacket
+
+export interface SyncSettingsGameDataPacket {
+  type: GameDataType.RPC
+  flag: RPCFlag.SyncSettings
+  netId: number
+  gameOptions: GameOptions
+}
+
+export interface UnparsedRPCGameDataPacket {
+  type: GameDataType.RPC
+  flag: Exclude<RPCFlag, RPCFlag.SyncSettings>
+  netId: number
+  data: ByteBuffer
+}
+
 // Game component
 // https://wiki.weewoo.net/wiki/Components
 export interface GameComponent {
   netId: number
   data: ByteBuffer
+}
+
+// Game options data
+// https://wiki.weewoo.net/wiki/Game_Options_Data
+export interface GameOptions {
+  maxPlayers: number
+  language: Language
+  map: AmongUsMap
+  playerSpeedModifier: number
+  crewLightModifier: number
+  impostorLightModifier: number
+  killCooldown: number
+  commonTasks: number
+  longTasks: number
+  shortTasks: number
+  emergencies: number
+  impostors: number
+  killDistance: number
+  discussionTime: number
+  votingTime: number
+  isDefault: boolean
+  emergencyCooldown: number
+  confirmEjects: boolean
+  visualTasks: boolean
 }
