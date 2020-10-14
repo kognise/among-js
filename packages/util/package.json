@@ -1,6 +1,6 @@
 {
   "name": "@among-js/util",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Among JS helper functions",
   "author": "Felix Mattick <felix.mattick@gmail.com>",
   "scripts": {
@@ -27,5 +27,5 @@
     "access": "public"
   },
   "license": "AGPL-3.0-or-later",
-  "gitHead": "eb43762da71dd25e7e34b044fb1c9dee5f28d356"
+  "gitHead": "90fd28425024a000967f90750a7b55c3914483ef"
 }
