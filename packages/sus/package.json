@@ -17,10 +17,10 @@
     "dist"
   ],
   "dependencies": {
-    "@among-js/data": "^0.0.1",
-    "@among-js/hazel": "^0.0.1",
-    "@among-js/packets": "^0.0.1",
-    "@among-js/util": "^0.0.1",
+    "@among-js/data": "^0.0.0",
+    "@among-js/hazel": "^0.0.0",
+    "@among-js/packets": "^0.0.0",
+    "@among-js/util": "^0.0.0",
     "bytebuffer": "^5.0.1",
     "tslib": "^2.0.0"
   },
