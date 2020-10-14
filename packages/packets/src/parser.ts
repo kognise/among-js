@@ -19,11 +19,12 @@ const parseRPCGameDataPacket = (
   buffer: ByteBuffer,
   dataLength: number
 ): RPCGameDataPacket => {
+  const netId = buffer.readByte()
   const flag: RPCFlag = buffer.readByte()
-  const data = buffer.readBytes(dataLength - 1)
+  const data = buffer.readBytes(dataLength - 2)
   return {
     type: GameDataType.RPC,
-    netId: -1, // No net id provided for incoming rpc packets?
+    netId,
     flag,
     data
   }
@@ -116,6 +117,12 @@ const parseGameDataPayloadPacket = (
         )
       }
       buffer.skip(dataLength - (endOffset - startOffset))
+    } else if (endOffset - startOffset > dataLength) {
+      throw new Error(
+        `Parsing game data packet of type ${prettyGameDataType(
+          dataType
+        )} went over the length`
+      )
     }
   }
 
@@ -196,6 +203,12 @@ export const parsePayloads = (buffer: ByteBuffer): PayloadPacket[] => {
         )
       }
       buffer.skip(payloadLength - (endOffset - startOffset))
+    } else if (endOffset - startOffset > payloadLength) {
+      throw new Error(
+        `Parsing payload packet of type ${prettyPayloadType(
+          payloadType
+        )} went over the length`
+      )
     }
   }
 

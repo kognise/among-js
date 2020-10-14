@@ -4,7 +4,7 @@ const consola = require('consola')
 
 consola.wrapAll()
 
-const code = 'ABCDEF'
+const code = 'ZJFJWQ'
 const username = 'tester'
 const color = PlayerColor.Orange
 
@@ -21,7 +21,7 @@ const s = new AmongUsSocket(username)
   // Spawn the player with an username + avatar.
   await s.spawn(color)
   consola.success('Spawned player')
-})().catch(console.error)
+})().catch(consola.error)
 
 process.on('SIGINT', () => {
   // Clean up the socket cleanly to avoid reconnection issues.
