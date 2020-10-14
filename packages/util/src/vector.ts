@@ -12,10 +12,7 @@ export class Vector2 {
   static read(bb: ByteBuffer): Vector2 {
     const x = bb.readUint16() / 65535
     const y = bb.readUint16() / 65535
-    return new Vector2(
-      lerp(-40, 40, x),
-      lerp(-40, 40, y)
-    )
+    return new Vector2(lerp(-40, 40, x), lerp(-40, 40, y))
   }
 
   write(bb: ByteBuffer) {

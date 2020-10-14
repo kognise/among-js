@@ -1,8 +1,8 @@
 export const pack = (value: number) => {
   const array = []
-  
+
   do {
-    let b = value & 0xFF
+    let b = value & 0xff
     if (value >= 0x80) {
       b |= 0x80
     }

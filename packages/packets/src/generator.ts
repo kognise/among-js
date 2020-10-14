@@ -1,12 +1,19 @@
-import consola from 'consola'
-import { GameDataType, PayloadType, prettyGameDataType, prettyPayloadType } from './enum'
-import { GameDataPayloadPacket, PayloadPacket, DataGameDataPacket, GameDataToPayloadPacket, GameDataPacket, RPCGameDataPacket, SpawnGameDataPacket, SceneChangeGameDataPacket } from './types'
 import ByteBuffer from 'bytebuffer'
-import { assertJoinGameRequestPayloadPacket } from './assertions'
-import { pack } from '../util/manipulation'
-
-// You'll regret reading this, but if you have to these are functions
-// for generating raw packets from fancy objects.
+import {
+  GameDataType,
+  PayloadType,
+  assertJoinGameRequestPayloadPacket,
+  DataGameDataPacket,
+  GameDataPacket,
+  GameDataPayloadPacket,
+  GameDataToPayloadPacket,
+  PayloadPacket,
+  RPCGameDataPacket,
+  SceneChangeGameDataPacket,
+  prettyGameDataType,
+  prettyPayloadType
+} from '@among-js/data'
+import { pack } from '@among-js/util'
 
 const generateDataGameDataPacket = (packet: DataGameDataPacket): ByteBuffer => {
   const buffer = new ByteBuffer(14, true)
@@ -21,17 +28,19 @@ const generateDataGameDataPacket = (packet: DataGameDataPacket): ByteBuffer => {
   return buffer
 }
 
-const generateSceneChangeGameDataPacket = (packet: SceneChangeGameDataPacket): ByteBuffer => {
+const generateSceneChangeGameDataPacket = (
+  packet: SceneChangeGameDataPacket
+): ByteBuffer => {
   const packedPlayerId = pack(packet.playerId)
-  const size = packedPlayerId.length + 1 + packet.setting.length
-  
+  const size = packedPlayerId.length + 1 + packet.location.length
+
   const buffer = new ByteBuffer(3 + size, true)
   buffer.writeInt16(size)
   buffer.writeByte(packet.type)
 
   buffer.append(packedPlayerId)
-  buffer.writeByte(packet.setting.length)
-  buffer.writeString(packet.setting)
+  buffer.writeByte(packet.location.length)
+  buffer.writeString(packet.location)
 
   return buffer
 }
@@ -63,13 +72,19 @@ const genericGameDataPacketSwitch = (part: GameDataPacket): ByteBuffer => {
     }
 
     default: {
-      consola.warn(`Game data packet of type ${prettyGameDataType(part.type)} wasn't able to be generated`)
+      console.warn(
+        `Game data packet of type ${prettyGameDataType(
+          part.type
+        )} wasn't able to be generated`
+      )
       return new ByteBuffer(0)
     }
   }
 }
 
-const generateGameDataPayloadPacket = (packet: GameDataPayloadPacket): ByteBuffer => {
+const generateGameDataPayloadPacket = (
+  packet: GameDataPayloadPacket
+): ByteBuffer => {
   const serializedParts: ByteBuffer[] = []
 
   for (const part of packet.parts) {
@@ -89,7 +104,9 @@ const generateGameDataPayloadPacket = (packet: GameDataPayloadPacket): ByteBuffe
   return buffer
 }
 
-const generateGameDataToPayloadPacket = (packet: GameDataToPayloadPacket): ByteBuffer => {
+const generateGameDataToPayloadPacket = (
+  packet: GameDataToPayloadPacket
+): ByteBuffer => {
   const serializedParts: ByteBuffer[] = []
 
   for (const part of packet.parts) {
@@ -128,7 +145,7 @@ export const generatePayloads = (packets: PayloadPacket[]): ByteBuffer => {
 
       case PayloadType.JoinGame: {
         assertJoinGameRequestPayloadPacket(packet)
-        
+
         const bb = new ByteBuffer(8, true)
         bb.writeInt16(5)
         bb.writeByte(packet.type)
@@ -140,12 +157,19 @@ export const generatePayloads = (packets: PayloadPacket[]): ByteBuffer => {
       }
 
       default: {
-        consola.warn(`Packet of type ${prettyPayloadType(packet.type)} wasn't able to be generated`)
+        console.warn(
+          `Packet of type ${prettyPayloadType(
+            packet.type
+          )} wasn't able to be generated`
+        )
       }
     }
   }
 
-  const buffer = new ByteBuffer(serializedPackets.reduce((acc, bb) => acc + bb.capacity(), 0), true)
+  const buffer = new ByteBuffer(
+    serializedPackets.reduce((acc, bb) => acc + bb.capacity(), 0),
+    true
+  )
   for (const bb of serializedPackets) {
     buffer.append(bb.buffer)
   }

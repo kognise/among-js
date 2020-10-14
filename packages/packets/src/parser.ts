@@ -1,13 +1,24 @@
-import consola from 'consola'
-import { readPacked } from '../util/manipulation'
-import { Vector2 } from '../util/vector'
-import { GameDataType, PayloadType, prettyDisconnectReason, prettyGameDataType, prettyPayloadType, RPCFlag } from './enum'
-import { GameDataPacket, GameComponent, GameDataPayloadPacket, PayloadPacket, RPCGameDataPacket, SpawnGameDataPacket, DataGameDataPacket } from './types'
+import {
+  RPCGameDataPacket,
+  RPCFlag,
+  GameDataType,
+  SpawnGameDataPacket,
+  GameComponent,
+  DataGameDataPacket,
+  GameDataPayloadPacket,
+  GameDataPacket,
+  prettyGameDataType,
+  PayloadType,
+  PayloadPacket,
+  prettyDisconnectReason,
+  prettyPayloadType
+} from '@among-js/data'
+import { readPacked, Vector2 } from '@among-js/util'
 
-// You'll regret reading this, but if you have to these are functions
-// for parsing raw packets into fancy objects.
-
-const parseRPCGameDataPacket = (buffer: ByteBuffer, dataLength: number): RPCGameDataPacket => {
+const parseRPCGameDataPacket = (
+  buffer: ByteBuffer,
+  dataLength: number
+): RPCGameDataPacket => {
   const flag: RPCFlag = buffer.readByte()
   const data = buffer.readBytes(dataLength - 1)
   return {
@@ -32,7 +43,7 @@ const parseSpawnGameDataPacket = (buffer: ByteBuffer): SpawnGameDataPacket => {
     buffer.readByte()
     const data = buffer.readBytes(length)
 
-    consola.info(`Net id: ${netId}, size: ${length}`)
+    console.info(`Net id: ${netId}, size: ${length}`)
     components.push({ netId, data })
   }
 
@@ -60,7 +71,9 @@ const parseDataGameDataPacket = (buffer: ByteBuffer): DataGameDataPacket => {
   }
 }
 
-const parseGameDataPayloadPacket = (buffer: ByteBuffer): GameDataPayloadPacket => {
+const parseGameDataPayloadPacket = (
+  buffer: ByteBuffer
+): GameDataPayloadPacket => {
   const codeNumber = buffer.readInt32()
   const parts: GameDataPacket[] = []
 
@@ -89,9 +102,18 @@ const parseGameDataPayloadPacket = (buffer: ByteBuffer): GameDataPayloadPacket =
 
     if (endOffset - startOffset < dataLength) {
       if (endOffset - startOffset === 0) {
-        consola.warn(`Game data packet of type ${prettyGameDataType(dataType)} wasn't handled`)
+        console.warn(
+          `Game data packet of type ${prettyGameDataType(
+            dataType
+          )} wasn't handled`
+        )
       } else {
-        consola.warn(`Parsing game data packet of type ${prettyGameDataType(dataType)} did not use entire length (${endOffset - startOffset} < ${dataLength})`)
+        console.warn(
+          `Parsing game data packet of type ${prettyGameDataType(
+            dataType
+          )} did not use entire length (${endOffset -
+            startOffset} < ${dataLength})`
+        )
       }
       buffer.skip(dataLength - (endOffset - startOffset))
     }
@@ -162,9 +184,16 @@ export const parsePayloads = (buffer: ByteBuffer): PayloadPacket[] => {
 
     if (endOffset - startOffset < payloadLength) {
       if (endOffset - startOffset === 0) {
-        consola.warn(`Payload of type ${prettyPayloadType(payloadType)} wasn't handled`)
+        console.warn(
+          `Payload of type ${prettyPayloadType(payloadType)} wasn't handled`
+        )
       } else {
-        consola.warn(`Parsing payload of type ${prettyPayloadType(payloadType)} did not use entire length (${endOffset - startOffset} < ${payloadLength})`)
+        console.warn(
+          `Parsing payload of type ${prettyPayloadType(
+            payloadType
+          )} did not use entire length (${endOffset -
+            startOffset} < ${payloadLength})`
+        )
       }
       buffer.skip(payloadLength - (endOffset - startOffset))
     }

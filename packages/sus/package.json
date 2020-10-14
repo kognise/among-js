@@ -1,0 +1,33 @@
+{
+  "name": "@among-js/sus",
+  "version": "0.0.0",
+  "description": "A clean wrapper for writing Among Us bots",
+  "author": "Felix Mattick <felix.mattick@gmail.com>",
+  "scripts": {
+    "dev": "tsdx watch --tsconfig tsconfig.build.json --verbose --noClean",
+    "build": "tsdx build --tsconfig tsconfig.build.json",
+    "lint": "tsdx lint",
+    "prepublish": "yarn build"
+  },
+  "main": "dist/index.js",
+  "module": "dist/utils.esm.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "README.md",
+    "dist"
+  ],
+  "dependencies": {
+    "@among-js/data": "^0.0.0",
+    "@among-js/util": "^0.0.0",
+    "@among-js/packets": "^0.0.0",
+    "@among-js/hazel": "^0.0.0",
+    "tslib": "^2.0.0",
+    "bytebuffer": "^5.0.1"
+  },
+  "devDependencies": {
+    "@types/bytebuffer": "^5.0.41"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

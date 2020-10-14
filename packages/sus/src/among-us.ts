@@ -1,12 +1,16 @@
-import { GameDataType, GameSetting, PacketType, PayloadType, PlayerColor, RPCFlag } from '../packets/enum'
-import { HazelUDPSocket } from './hazel'
-import { v2CodeToNumber } from '../util/codes'
+import {
+  PacketType,
+  PayloadType,
+  assertJoinGameErrorPayloadPacket,
+  PlayerColor,
+  GameDataType,
+  RPCFlag,
+  SceneChangeLocation
+} from '@among-js/data'
+import { HazelUDPSocket } from '@among-js/hazel'
+import { parsePayloads, generatePayloads } from '@among-js/packets'
+import { v2CodeToNumber, quick } from '@among-js/util'
 import ByteBuffer from 'bytebuffer'
-import consola from 'consola'
-import { parsePayloads } from '../packets/parser'
-import { assertJoinGameErrorPayloadPacket } from '../packets/assertions'
-import { generatePayloads } from '../packets/generator'
-import { quick } from '../util/quick'
 
 interface Game {
   code: string
@@ -15,18 +19,18 @@ interface Game {
 }
 
 interface JoinedJoinResult {
-  state: 'joined',
+  state: 'joined'
   game: Game
 }
 
 interface ErrorJoinResult {
-  state: 'error',
+  state: 'error'
   error: Error
 }
 
 interface RedirectJoinResult {
-  state: 'redirect',
-  ip: string,
+  state: 'redirect'
+  ip: string
   port: number
 }
 
@@ -50,7 +54,7 @@ export class AmongUsSocket {
     // Send a hello with a username and wait for the response.
     const hello = new ByteBuffer(6 + this.name.length)
     hello.writeByte(0)
-    hello.writeInt32(0x46_D2_02_03)
+    hello.writeInt32(0x46_d2_02_03)
     hello.writeByte(this.name.length)
     hello.writeString(this.name)
     await this.s.sendReliable(PacketType.Hello, hello)
@@ -64,7 +68,7 @@ export class AmongUsSocket {
     //   the join should be retried on the given ip and port
     // - Error, meaning it should throw an error
 
-    const promise = new Promise<JoinResult>((resolve) => {
+    const promise = new Promise<JoinResult>(resolve => {
       const cb = (buffer: ByteBuffer) => {
         const payloads = parsePayloads(buffer)
 
@@ -103,12 +107,15 @@ export class AmongUsSocket {
 
     // Actually send the join game packet now that the listener
     // is set up.
-    await this.s.sendReliable(PacketType.Reliable, generatePayloads([
-      {
-        type: PayloadType.JoinGame,
-        code: v2CodeToNumber(code)
-      }
-    ]))
+    await this.s.sendReliable(
+      PacketType.Reliable,
+      generatePayloads([
+        {
+          type: PayloadType.JoinGame,
+          code: v2CodeToNumber(code)
+        }
+      ])
+    )
 
     return await promise
   }
@@ -128,7 +135,7 @@ export class AmongUsSocket {
       }
 
       if (joinResult.state === 'redirect') {
-        consola.info(`Redirecting to ${joinResult.ip}:${joinResult.port}`)
+        console.info(`Redirecting to ${joinResult.ip}:${joinResult.port}`)
         await this.s.disconnect()
         this.s = new HazelUDPSocket('udp4')
         await this.connect(joinResult.port, joinResult.ip)
@@ -139,9 +146,9 @@ export class AmongUsSocket {
   async spawn(color: PlayerColor) {
     // Spawn the player with an avatar and username.
 
-    this.s.on('message', async (buffer) => {
+    this.s.on('message', async buffer => {
       const payloads = parsePayloads(buffer)
-      
+
       for (const payload of payloads) {
         if (payload.type === PayloadType.GameData) {
           for (const part of payload.parts) {
@@ -153,30 +160,33 @@ export class AmongUsSocket {
               // Technically, I should check what it's actually spawning and add other logic
               // here, but I'm lazy so I'll do that when something breaks.
 
-              await this.s.sendReliable(PacketType.Reliable, generatePayloads([
-                {
-                  type: PayloadType.GameDataTo,
-                  recipient: this.game!.hostId,
-                  code: v2CodeToNumber(this.game!.code),
-                  parts: [
-                    {
-                      type: GameDataType.RPC,
-                      flag: RPCFlag.CheckName,
-                      netId: part.components[0].netId,
-                      data: quick(1 + this.name.length, (bb) => {
-                        bb.writeByte(this.name.length)
-                        bb.writeString(this.name)
-                      })
-                    },
-                    {
-                      type: GameDataType.RPC,
-                      flag: RPCFlag.CheckColor,
-                      netId: part.components[0].netId,
-                      data: quick(1, (bb) => bb.writeByte(color))
-                    }
-                  ]
-                }
-              ]))
+              await this.s.sendReliable(
+                PacketType.Reliable,
+                generatePayloads([
+                  {
+                    type: PayloadType.GameDataTo,
+                    recipient: this.game!.hostId,
+                    code: v2CodeToNumber(this.game!.code),
+                    parts: [
+                      {
+                        type: GameDataType.RPC,
+                        flag: RPCFlag.CheckName,
+                        netId: part.components[0].netId,
+                        data: quick(1 + this.name.length, bb => {
+                          bb.writeByte(this.name.length)
+                          bb.writeString(this.name)
+                        })
+                      },
+                      {
+                        type: GameDataType.RPC,
+                        flag: RPCFlag.CheckColor,
+                        netId: part.components[0].netId,
+                        data: quick(1, bb => bb.writeByte(color))
+                      }
+                    ]
+                  }
+                ])
+              )
             }
           }
         }
@@ -184,18 +194,21 @@ export class AmongUsSocket {
     })
 
     // Listener is setup, so request a scene change to get a spawn point.
-    await this.s.sendReliable(PacketType.Reliable, generatePayloads([
-      {
-        type: PayloadType.GameData,
-        code: v2CodeToNumber(this.game!.code),
-        parts: [
-          {
-            type: GameDataType.SceneChange,
-            playerId: this.game!.playerId,
-            setting: GameSetting.OnlineGame
-          }
-        ]
-      }
-    ]))
+    await this.s.sendReliable(
+      PacketType.Reliable,
+      generatePayloads([
+        {
+          type: PayloadType.GameData,
+          code: v2CodeToNumber(this.game!.code),
+          parts: [
+            {
+              type: GameDataType.SceneChange,
+              playerId: this.game!.playerId,
+              location: SceneChangeLocation.OnlineGame
+            }
+          ]
+        }
+      ])
+    )
   }
 }

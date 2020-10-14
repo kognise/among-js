@@ -1,8 +1,7 @@
 import dgram from 'dgram'
 import ByteBuffer from 'bytebuffer'
-import { PacketType, prettyDisconnectReason } from '../packets/enum'
 import { EventEmitter } from 'events'
-import consola from 'consola'
+import { PacketType, prettyDisconnectReason } from '@among-js/data'
 
 export declare interface HazelUDPSocket {
   on(event: 'message', cb: (buffer: ByteBuffer) => void): this
@@ -18,13 +17,13 @@ export class HazelUDPSocket extends EventEmitter {
 
     this.s = dgram.createSocket(type)
 
-    this.s.on('error', (err) => {
-      consola.error(err)
+    this.s.on('error', err => {
+      console.error(err)
       this.s.close()
     })
-    
+
     // Setup listeners for various packet types.
-    this.s.on('message', (msg) => {
+    this.s.on('message', msg => {
       const packetType: PacketType = msg[0]
 
       switch (packetType) {
@@ -39,7 +38,9 @@ export class HazelUDPSocket extends EventEmitter {
         }
 
         case PacketType.Disconnect: {
-          consola.info(`Disconnecting by request, ${prettyDisconnectReason(msg[1])}`)
+          console.warn(
+            `Disconnecting by request:\n${prettyDisconnectReason(msg[1])}`
+          )
           this.s.close()
           this.removeAllListeners()
           break
@@ -57,7 +58,7 @@ export class HazelUDPSocket extends EventEmitter {
         }
 
         default: {
-          consola.warn(`Unknown packet type: ${packetType}`)
+          console.warn(`Unknown packet type: ${packetType}`)
         }
       }
     })
@@ -89,7 +90,7 @@ export class HazelUDPSocket extends EventEmitter {
   private async waitForAcknowledgement(reliableId: number) {
     // Hacky helper to wait for an acknowledgement before continuing.
 
-    await new Promise((resolve) => {
+    await new Promise(resolve => {
       const cb = (msg: Buffer) => {
         const packetType: PacketType = msg[0]
         if (packetType !== PacketType.Acknowledgement) return
@@ -107,7 +108,7 @@ export class HazelUDPSocket extends EventEmitter {
 
   connect(port: number, ip?: string) {
     // Bind the socket to an ip and port.
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       this.s.connect(port, ip, () => resolve())
     })
   }
@@ -132,7 +133,7 @@ export class HazelUDPSocket extends EventEmitter {
     // Just a simple wrapper for asyncronously sending ByteBuffer packets.
 
     return new Promise((resolve, reject) => {
-      this.s.send(bb.buffer, (err) => {
+      this.s.send(bb.buffer, err => {
         if (err) {
           reject(err)
         } else {
@@ -152,8 +153,8 @@ export class HazelUDPSocket extends EventEmitter {
     dc.writeByte(9)
 
     this.s.removeAllListeners()
-    const promise = new Promise((resolve) => {
-      this.s.on('message', (msg) => {
+    const promise = new Promise(resolve => {
+      this.s.on('message', msg => {
         if (msg[0] === PacketType.Disconnect) {
           this.s.close()
           this.s.removeAllListeners()

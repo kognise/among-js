@@ -1,6 +1,0 @@
-06    // Client id
-ff 02 // Sequence (UInt16)
-48 7f // X coord (UInt16)
-95 85 // Y coord (UInt16)
-ff 7f // X velocity (UInt16)
-ff 7f // Y velocity (UInt16)
