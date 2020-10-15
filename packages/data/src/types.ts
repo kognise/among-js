@@ -1,12 +1,12 @@
 import { Vector2 } from '@among-js/util'
-import { PlayerColor } from '../dist'
 import {
   GameDataType,
   SceneChangeLocation,
   PayloadType,
   RPCFlag,
   Language,
-  AmongUsMap
+  AmongUsMap,
+  PlayerColor
 } from './enums'
 
 // Payload packets
