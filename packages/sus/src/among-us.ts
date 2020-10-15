@@ -41,7 +41,7 @@ type JoinResult = JoinedJoinResult | ErrorJoinResult | RedirectJoinResult
 export declare interface AmongUsSocket {
   on(
     event: 'playerMove',
-    cb: (netId: string, position: Vector2, velocity: Vector2) => void
+    cb: (netId: number, position: Vector2, velocity: Vector2) => void
   ): this
 }
 
@@ -51,8 +51,9 @@ export class AmongUsSocket extends EventEmitter {
   s: HazelUDPSocket
   private name: string
   private game: Game | null = null
-  private components: GameComponent[] = []
   private moveSequence: number = -1
+  private components: GameComponent[] = []
+  ready = false
 
   constructor(name: string) {
     super()
@@ -235,6 +236,7 @@ export class AmongUsSocket extends EventEmitter {
     )
 
     await promise
+    this.ready = true
   }
 
   async move(position: Vector2, velocity: Vector2) {
