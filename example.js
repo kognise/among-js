@@ -1,5 +1,5 @@
 const { AmongUsSocket } = require('@among-js/sus')
-const { PlayerColor } = require('@among-js/data')
+const { PlayerColor, matchmakingServers } = require('@among-js/data')
 const consola = require('consola')
 
 consola.wrapAll()
@@ -22,7 +22,7 @@ s.on('playerMove', async (netId, position, velocity) => {
 
 
 ;(async () => {
-  await s.connect(22023, '45.79.5.6')
+  await s.connect(22023, matchmakingServers.NA[0])
   consola.info(`Connected to server as ${username}`)
 
   const joined = await s.joinGame(code)
