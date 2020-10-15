@@ -1,6 +1,6 @@
 {
   "name": "@among-js/data",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "Among JS game data",
   "author": "Felix Mattick <felix.mattick@gmail.com>",
   "scripts": {
@@ -17,7 +17,7 @@
     "dist"
   ],
   "dependencies": {
-    "@among-js/util": "^0.0.9",
+    "@among-js/util": "^0.0.10",
     "bytebuffer": "^5.0.1",
     "tslib": "^2.0.0"
   },
