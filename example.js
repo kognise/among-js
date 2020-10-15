@@ -10,6 +10,7 @@ const color = PlayerColor.Orange
 
 const s = new AmongUsSocket(username)
 
+
 // Follow the first player to move.
 let firstNetId
 s.on('playerMove', async (netId, position, velocity) => {
@@ -18,6 +19,7 @@ s.on('playerMove', async (netId, position, velocity) => {
 
   await s.move(position, velocity)
 })
+
 
 ;(async () => {
   await s.connect(22023, '45.79.5.6')
@@ -30,6 +32,7 @@ s.on('playerMove', async (netId, position, velocity) => {
   await s.spawn(color)
   consola.success('Spawned player')
 })().catch(consola.error)
+
 
 // Clean up the socket cleanly to avoid reconnection issues.
 process.on('SIGINT', () => {

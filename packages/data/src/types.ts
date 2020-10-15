@@ -126,7 +126,10 @@ export interface CheckColorRPCGameDataPacket {
 export interface UnparsedRPCGameDataPacket {
   type: GameDataType.RPC
   // Next line is cursed, fuck typescript
-  flag: Exclude<Exclude<Exclude<RPCFlag, RPCFlag.SyncSettings>, RPCFlag.CheckName>, RPCFlag.CheckColor>
+  flag: Exclude<
+    Exclude<Exclude<RPCFlag, RPCFlag.SyncSettings>, RPCFlag.CheckName>,
+    RPCFlag.CheckColor
+  >
   netId: number
   data: ByteBuffer
 }

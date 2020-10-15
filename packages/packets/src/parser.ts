@@ -27,7 +27,7 @@ const parseRPCGameDataPacket = (
   const packedSize = afterReadPacked - beforeReadPacked
 
   const flag: RPCFlag = buffer.readByte()
-  
+
   switch (flag) {
     case RPCFlag.SyncSettings: {
       return {
@@ -38,10 +38,28 @@ const parseRPCGameDataPacket = (
       }
     }
 
+    case RPCFlag.CheckName: {
+      const length = buffer.readByte()
+      const name = buffer.readString(length)
+      return {
+        type: GameDataType.RPC,
+        netId,
+        flag,
+        name
+      }
+    }
+
+    case RPCFlag.CheckColor: {
+      return {
+        type: GameDataType.RPC,
+        netId,
+        flag,
+        color: buffer.readByte()
+      }
+    }
+
     default: {
-      console.warn(
-        `RPC packet of type ${prettyRPCFlag(flag)} wasn't parsed`
-      )
+      console.warn(`RPC packet of type ${prettyRPCFlag(flag)} wasn't parsed`)
 
       const data = buffer.readBytes(dataLength - (1 + packedSize))
       return {

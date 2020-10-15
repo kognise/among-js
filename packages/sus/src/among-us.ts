@@ -39,7 +39,10 @@ interface RedirectJoinResult {
 type JoinResult = JoinedJoinResult | ErrorJoinResult | RedirectJoinResult
 
 export declare interface AmongUsSocket {
-  on(event: 'playerMove', cb: (netId: string, position: Vector2, velocity: Vector2) => void): this
+  on(
+    event: 'playerMove',
+    cb: (netId: string, position: Vector2, velocity: Vector2) => void
+  ): this
 }
 
 // Clean wrapper for the Among Us protocol.
@@ -155,7 +158,7 @@ export class AmongUsSocket extends EventEmitter {
   async spawn(color: PlayerColor) {
     // Spawn the player with an avatar and username.
 
-    const promise = new Promise((resolve) => {
+    const promise = new Promise(resolve => {
       this.s.on('message', async buffer => {
         const payloads = parsePayloads(buffer)
 
@@ -185,10 +188,6 @@ export class AmongUsSocket extends EventEmitter {
                           flag: RPCFlag.CheckName,
                           netId: part.components[0].netId,
                           name: this.name
-                          // data: quick(1 + this.name.length, bb => {
-                          //   bb.writeByte(this.name.length)
-                          //   bb.writeString(this.name)
-                          // })
                         },
                         {
                           type: GameDataType.RPC,
@@ -204,7 +203,12 @@ export class AmongUsSocket extends EventEmitter {
                 resolve()
               } else if (part.type === GameDataType.Data) {
                 this.moveSequence = part.sequence
-                this.emit('playerMove', part.netId, part.position, part.velocity)
+                this.emit(
+                  'playerMove',
+                  part.netId,
+                  part.position,
+                  part.velocity
+                )
               }
             }
           }

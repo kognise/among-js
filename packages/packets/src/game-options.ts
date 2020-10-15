@@ -56,7 +56,10 @@ export const readGameOptions = (buffer: ByteBuffer): GameOptions => {
   }
 }
 
-export const writeGameOptions = (gameOptions: GameOptions, buffer: ByteBuffer) => {
+export const writeGameOptions = (
+  gameOptions: GameOptions,
+  buffer: ByteBuffer
+) => {
   buffer.append(packedBaseLength)
   buffer.writeByte(3)
 

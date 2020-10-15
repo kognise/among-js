@@ -20,7 +20,7 @@ import { gameOptionsLength, writeGameOptions } from './game-options'
 
 const generateDataGameDataPacket = (packet: DataGameDataPacket): ByteBuffer => {
   const packedNetId = pack(packet.netId)
-  
+
   const buffer = new ByteBuffer(3 + packedNetId.length + 11, true)
   buffer.writeInt16(11)
   buffer.writeByte(packet.type)
@@ -54,7 +54,10 @@ const generateRPCGameDataPacket = (packet: RPCGameDataPacket): ByteBuffer => {
   switch (packet.flag) {
     case RPCFlag.SyncSettings: {
       const packedNetId = pack(packet.netId)
-      const buffer = new ByteBuffer(3 + packedNetId.length + 1 + gameOptionsLength, true)
+      const buffer = new ByteBuffer(
+        3 + packedNetId.length + 1 + gameOptionsLength,
+        true
+      )
 
       buffer.writeInt16(packedNetId.length + 1 + gameOptionsLength)
       buffer.writeByte(packet.type)
@@ -68,7 +71,10 @@ const generateRPCGameDataPacket = (packet: RPCGameDataPacket): ByteBuffer => {
 
     case RPCFlag.CheckName: {
       const packedNetId = pack(packet.netId)
-      const buffer = new ByteBuffer(3 + packedNetId.length + 2 + packet.name.length, true)
+      const buffer = new ByteBuffer(
+        3 + packedNetId.length + 2 + packet.name.length,
+        true
+      )
 
       buffer.writeInt16(packedNetId.length + 2 + packet.name.length)
       buffer.writeByte(packet.type)
@@ -97,10 +103,15 @@ const generateRPCGameDataPacket = (packet: RPCGameDataPacket): ByteBuffer => {
     }
 
     default: {
-      console.warn(`Generated data-only packet of type ${prettyRPCFlag(packet.flag)}`)
+      console.warn(
+        `Generated data-only packet of type ${prettyRPCFlag(packet.flag)}`
+      )
 
       const packedNetId = pack(packet.netId)
-      const buffer = new ByteBuffer(3 + packedNetId.length + 1 + packet.data.capacity(), true)
+      const buffer = new ByteBuffer(
+        3 + packedNetId.length + 1 + packet.data.capacity(),
+        true
+      )
       buffer.writeInt16(11)
       buffer.writeByte(packet.type)
 
