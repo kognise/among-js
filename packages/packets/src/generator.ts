@@ -56,13 +56,43 @@ const generateRPCGameDataPacket = (packet: RPCGameDataPacket): ByteBuffer => {
       const packedNetId = pack(packet.netId)
       const buffer = new ByteBuffer(3 + packedNetId.length + 1 + gameOptionsLength, true)
 
-      buffer.writeInt16(11)
+      buffer.writeInt16(packedNetId.length + 1 + gameOptionsLength)
       buffer.writeByte(packet.type)
 
       buffer.append(packedNetId)
       buffer.writeByte(packet.flag)
 
       writeGameOptions(packet.gameOptions, buffer)
+      return buffer
+    }
+
+    case RPCFlag.CheckName: {
+      const packedNetId = pack(packet.netId)
+      const buffer = new ByteBuffer(3 + packedNetId.length + 2 + packet.name.length, true)
+
+      buffer.writeInt16(packedNetId.length + 2 + packet.name.length)
+      buffer.writeByte(packet.type)
+
+      buffer.append(packedNetId)
+      buffer.writeByte(packet.flag)
+
+      buffer.writeByte(packet.name.length)
+      buffer.writeString(packet.name)
+
+      return buffer
+    }
+
+    case RPCFlag.CheckColor: {
+      const packedNetId = pack(packet.netId)
+      const buffer = new ByteBuffer(3 + packedNetId.length + 2, true)
+
+      buffer.writeInt16(packedNetId.length + 2)
+      buffer.writeByte(packet.type)
+
+      buffer.append(packedNetId)
+      buffer.writeByte(packet.flag)
+
+      buffer.writeByte(packet.color)
       return buffer
     }
 

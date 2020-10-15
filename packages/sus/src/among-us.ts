@@ -5,12 +5,14 @@ import {
   PlayerColor,
   GameDataType,
   RPCFlag,
-  SceneChangeLocation
+  SceneChangeLocation,
+  GameComponent
 } from '@among-js/data'
 import { HazelUDPSocket } from '@among-js/hazel'
 import { parsePayloads, generatePayloads } from '@among-js/packets'
-import { v2CodeToNumber, quick } from '@among-js/util'
+import { v2CodeToNumber, Vector2 } from '@among-js/util'
 import ByteBuffer from 'bytebuffer'
+import { EventEmitter } from 'events'
 
 interface Game {
   code: string
@@ -36,14 +38,21 @@ interface RedirectJoinResult {
 
 type JoinResult = JoinedJoinResult | ErrorJoinResult | RedirectJoinResult
 
+export declare interface AmongUsSocket {
+  on(event: 'playerMove', cb: (netId: string, position: Vector2, velocity: Vector2) => void): this
+}
+
 // Clean wrapper for the Among Us protocol.
 // (Well, the usage is clean, the internal code isn't.)
-export class AmongUsSocket {
+export class AmongUsSocket extends EventEmitter {
   s: HazelUDPSocket
   private name: string
   private game: Game | null = null
+  private components: GameComponent[] = []
+  private moveSequence: number = -1
 
   constructor(name: string) {
+    super()
     this.name = name
     this.s = new HazelUDPSocket('udp4')
   }
@@ -146,51 +155,61 @@ export class AmongUsSocket {
   async spawn(color: PlayerColor) {
     // Spawn the player with an avatar and username.
 
-    this.s.on('message', async buffer => {
-      const payloads = parsePayloads(buffer)
+    const promise = new Promise((resolve) => {
+      this.s.on('message', async buffer => {
+        const payloads = parsePayloads(buffer)
 
-      for (const payload of payloads) {
-        if (payload.type === PayloadType.GameData) {
-          for (const part of payload.parts) {
-            if (part.type === GameDataType.Spawn) {
-              // When a spawn packet is received, send a two-part payload with the
-              // desired username and color. The actual game sends these as two payloads
-              // but this is equivalent.
+        for (const payload of payloads) {
+          if (payload.type === PayloadType.GameData) {
+            for (const part of payload.parts) {
+              if (part.type === GameDataType.Spawn) {
+                // When a spawn packet is received, send a two-part payload with the
+                // desired username and color. The actual game sends these as two payloads
+                // but this is equivalent.
 
-              // Technically, I should check what it's actually spawning and add other logic
-              // here, but I'm lazy so I'll do that when something breaks.
+                // Technically, I should check what it's actually spawning and add other logic
+                // here, but I'm lazy so I'll do that when something breaks.
 
-              await this.s.sendReliable(
-                PacketType.Reliable,
-                generatePayloads([
-                  {
-                    type: PayloadType.GameDataTo,
-                    recipient: this.game!.hostId,
-                    code: v2CodeToNumber(this.game!.code),
-                    parts: [
-                      {
-                        type: GameDataType.RPC,
-                        flag: RPCFlag.CheckName,
-                        netId: part.components[0].netId,
-                        data: quick(1 + this.name.length, bb => {
-                          bb.writeByte(this.name.length)
-                          bb.writeString(this.name)
-                        })
-                      },
-                      {
-                        type: GameDataType.RPC,
-                        flag: RPCFlag.CheckColor,
-                        netId: part.components[0].netId,
-                        data: quick(1, bb => bb.writeByte(color))
-                      }
-                    ]
-                  }
-                ])
-              )
+                this.components = part.components
+
+                await this.s.sendReliable(
+                  PacketType.Reliable,
+                  generatePayloads([
+                    {
+                      type: PayloadType.GameDataTo,
+                      recipient: this.game!.hostId,
+                      code: v2CodeToNumber(this.game!.code),
+                      parts: [
+                        {
+                          type: GameDataType.RPC,
+                          flag: RPCFlag.CheckName,
+                          netId: part.components[0].netId,
+                          name: this.name
+                          // data: quick(1 + this.name.length, bb => {
+                          //   bb.writeByte(this.name.length)
+                          //   bb.writeString(this.name)
+                          // })
+                        },
+                        {
+                          type: GameDataType.RPC,
+                          flag: RPCFlag.CheckColor,
+                          netId: part.components[0].netId,
+                          color
+                        }
+                      ]
+                    }
+                  ])
+                )
+
+                resolve()
+              } else if (part.type === GameDataType.Data) {
+                this.moveSequence = part.sequence
+                this.emit('playerMove', part.netId, part.position, part.velocity)
+              }
             }
           }
         }
-      }
+      })
     })
 
     // Listener is setup, so request a scene change to get a spawn point.
@@ -205,6 +224,29 @@ export class AmongUsSocket {
               type: GameDataType.SceneChange,
               playerId: this.game!.playerId,
               location: SceneChangeLocation.OnlineGame
+            }
+          ]
+        }
+      ])
+    )
+
+    await promise
+  }
+
+  async move(position: Vector2, velocity: Vector2) {
+    await this.s.sendReliable(
+      PacketType.Reliable,
+      generatePayloads([
+        {
+          type: PayloadType.GameData,
+          code: v2CodeToNumber(this.game!.code),
+          parts: [
+            {
+              type: GameDataType.Data,
+              netId: this.components[2].netId,
+              sequence: ++this.moveSequence,
+              position: position,
+              velocity: velocity
             }
           ]
         }

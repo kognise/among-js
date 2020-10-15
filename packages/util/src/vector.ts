@@ -18,7 +18,7 @@ export class Vector2 {
   write(bb: ByteBuffer) {
     const x = unlerp(-40, 40, this.x) * 65535
     const y = unlerp(-40, 40, this.y) * 65535
-    bb.writeUint16(x)
-    bb.writeUint16(y)
+    bb.writeUint16(Math.round(x))
+    bb.writeUint16(Math.round(y))
   }
 }

@@ -4,11 +4,20 @@ const consola = require('consola')
 
 consola.wrapAll()
 
-const code = 'ZJFJWQ'
+const code = 'RIVDTQ'
 const username = 'tester'
 const color = PlayerColor.Orange
 
 const s = new AmongUsSocket(username)
+
+// Follow the first player to move.
+let firstNetId
+s.on('playerMove', async (netId, position, velocity) => {
+  if (!firstNetId) firstNetId = netId
+  if (netId !== firstNetId) return
+
+  await s.move(position, velocity)
+})
 
 ;(async () => {
   await s.connect(22023, '45.79.5.6')
@@ -18,13 +27,12 @@ const s = new AmongUsSocket(username)
   consola.success(`Joined game ${code}`)
   consola.info(`Player id: ${joined.playerId}, host id: ${joined.hostId}`)
 
-  // Spawn the player with an username + avatar.
   await s.spawn(color)
   consola.success('Spawned player')
 })().catch(consola.error)
 
+// Clean up the socket cleanly to avoid reconnection issues.
 process.on('SIGINT', () => {
-  // Clean up the socket cleanly to avoid reconnection issues.
   consola.info('Closing sockets')
   s.s.disconnect()
   process.exit()

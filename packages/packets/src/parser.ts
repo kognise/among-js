@@ -68,7 +68,6 @@ const parseSpawnGameDataPacket = (buffer: ByteBuffer): SpawnGameDataPacket => {
     buffer.readByte()
     const data = buffer.readBytes(length)
 
-    console.info(`Net id: ${netId}, size: ${length}`)
     components.push({ netId, data })
   }
 

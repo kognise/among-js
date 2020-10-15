@@ -1,4 +1,5 @@
 import { Vector2 } from '@among-js/util'
+import { PlayerColor } from '../dist'
 import {
   GameDataType,
   SceneChangeLocation,
@@ -96,19 +97,36 @@ export interface SceneChangeGameDataPacket {
 // RPC
 // https://wiki.weewoo.net/wiki/Protocol#2_-_RPC_Game_Data
 export type RPCGameDataPacket =
-  | SyncSettingsGameDataPacket
+  | SyncSettingsRPCGameDataPacket
+  | CheckNameRPCGameDataPacket
+  | CheckColorRPCGameDataPacket
   | UnparsedRPCGameDataPacket
 
-export interface SyncSettingsGameDataPacket {
+export interface SyncSettingsRPCGameDataPacket {
   type: GameDataType.RPC
   flag: RPCFlag.SyncSettings
   netId: number
   gameOptions: GameOptions
 }
 
+export interface CheckNameRPCGameDataPacket {
+  type: GameDataType.RPC
+  flag: RPCFlag.CheckName
+  netId: number
+  name: string
+}
+
+export interface CheckColorRPCGameDataPacket {
+  type: GameDataType.RPC
+  flag: RPCFlag.CheckColor
+  netId: number
+  color: PlayerColor
+}
+
 export interface UnparsedRPCGameDataPacket {
   type: GameDataType.RPC
-  flag: Exclude<RPCFlag, RPCFlag.SyncSettings>
+  // Next line is cursed, fuck typescript
+  flag: Exclude<Exclude<Exclude<RPCFlag, RPCFlag.SyncSettings>, RPCFlag.CheckName>, RPCFlag.CheckColor>
   netId: number
   data: ByteBuffer
 }
