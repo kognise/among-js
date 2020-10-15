@@ -21,7 +21,11 @@ const parseRPCGameDataPacket = (
   buffer: ByteBuffer,
   dataLength: number
 ): RPCGameDataPacket => {
-  const netId = buffer.readByte()
+  const beforeReadPacked = buffer.offset
+  const netId = readPacked(buffer)
+  const afterReadPacked = buffer.offset
+  const packedSize = afterReadPacked - beforeReadPacked
+
   const flag: RPCFlag = buffer.readByte()
   
   switch (flag) {
@@ -39,7 +43,7 @@ const parseRPCGameDataPacket = (
         `RPC packet of type ${prettyRPCFlag(flag)} wasn't parsed`
       )
 
-      const data = buffer.readBytes(dataLength - 2)
+      const data = buffer.readBytes(dataLength - (1 + packedSize))
       return {
         type: GameDataType.RPC,
         netId,
@@ -59,7 +63,7 @@ const parseSpawnGameDataPacket = (buffer: ByteBuffer): SpawnGameDataPacket => {
   const components: GameComponent[] = []
 
   for (let i = 0; i < componentCount; i++) {
-    const netId = buffer.readByte()
+    const netId = readPacked(buffer)
     const length = buffer.readUint16()
     buffer.readByte()
     const data = buffer.readBytes(length)
@@ -78,7 +82,7 @@ const parseSpawnGameDataPacket = (buffer: ByteBuffer): SpawnGameDataPacket => {
 }
 
 const parseDataGameDataPacket = (buffer: ByteBuffer): DataGameDataPacket => {
-  const netId = buffer.readByte()
+  const netId = readPacked(buffer)
   const sequence = buffer.readUint16()
   const position = Vector2.read(buffer)
   const velocity = Vector2.read(buffer)

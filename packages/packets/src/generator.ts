@@ -19,11 +19,13 @@ import { pack } from '@among-js/util'
 import { gameOptionsLength, writeGameOptions } from './game-options'
 
 const generateDataGameDataPacket = (packet: DataGameDataPacket): ByteBuffer => {
-  const buffer = new ByteBuffer(14, true)
+  const packedNetId = pack(packet.netId)
+  
+  const buffer = new ByteBuffer(3 + packedNetId.length + 11, true)
   buffer.writeInt16(11)
   buffer.writeByte(packet.type)
 
-  buffer.writeByte(packet.netId)
+  buffer.append(packedNetId)
   buffer.writeUint16(packet.sequence)
   packet.position.write(buffer)
   packet.velocity.write(buffer)
@@ -51,12 +53,13 @@ const generateSceneChangeGameDataPacket = (
 const generateRPCGameDataPacket = (packet: RPCGameDataPacket): ByteBuffer => {
   switch (packet.flag) {
     case RPCFlag.SyncSettings: {
-      const buffer = new ByteBuffer(5 + gameOptionsLength, true)
+      const packedNetId = pack(packet.netId)
+      const buffer = new ByteBuffer(3 + packedNetId.length + 1 + gameOptionsLength, true)
 
       buffer.writeInt16(11)
       buffer.writeByte(packet.type)
 
-      buffer.writeByte(packet.netId)
+      buffer.append(packedNetId)
       buffer.writeByte(packet.flag)
 
       writeGameOptions(packet.gameOptions, buffer)
@@ -66,11 +69,12 @@ const generateRPCGameDataPacket = (packet: RPCGameDataPacket): ByteBuffer => {
     default: {
       console.warn(`Generated data-only packet of type ${prettyRPCFlag(packet.flag)}`)
 
-      const buffer = new ByteBuffer(5 + packet.data.capacity(), true)
+      const packedNetId = pack(packet.netId)
+      const buffer = new ByteBuffer(3 + packedNetId.length + 1 + packet.data.capacity(), true)
       buffer.writeInt16(11)
       buffer.writeByte(packet.type)
 
-      buffer.writeByte(packet.netId)
+      buffer.append(packedNetId)
       buffer.writeByte(packet.flag)
       buffer.append(packet.data.buffer)
 
