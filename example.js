@@ -4,7 +4,7 @@ const consola = require('consola')
 
 consola.wrapAll()
 
-const code = 'RIVDTQ'
+const code = 'ISPXNF'
 const username = 'tester'
 const color = PlayerColor.Orange
 

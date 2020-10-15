@@ -21,8 +21,8 @@ import { gameOptionsLength, writeGameOptions } from './game-options'
 const generateDataGameDataPacket = (packet: DataGameDataPacket): ByteBuffer => {
   const packedNetId = pack(packet.netId)
 
-  const buffer = new ByteBuffer(3 + packedNetId.length + 11, true)
-  buffer.writeInt16(11)
+  const buffer = new ByteBuffer(3 + packedNetId.length + 10, true)
+  buffer.writeInt16(packedNetId.length + 10)
   buffer.writeByte(packet.type)
 
   buffer.append(packedNetId)
