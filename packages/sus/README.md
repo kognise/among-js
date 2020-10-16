@@ -1,5 +1,3 @@
-# Among JS | Sus
+# Sus | Among JS
 
-A clean wrapper for writing Among Us bots.
-
-Please, for the love of God, don't use this yet.
+Simple and expressive object-oriented library for easily making bots and clients. This is part of Among JS, a simple and flexible library for interacting with the Among Us protocol.

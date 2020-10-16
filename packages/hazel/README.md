@@ -1,5 +1,3 @@
-# Among JS | Hazel
+# Hazel | Among JS
 
-Implementation of the Hazel protocol that powers Among Us.
-
-Please, for the love of God, don't use this yet.
+A library for interacting with the Hazel network protocol. This is part of Among JS, a simple and flexible library for interacting with the Among Us protocol.

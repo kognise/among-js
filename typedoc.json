@@ -1,0 +1,8 @@
+{
+  "name": "Among JS",
+  "inputFiles": [],
+  "readme": "./README.md",
+  "out": "docs",
+  "mode": "modules",
+  "external-modulemap": ".*packages\/([^\/]+)"
+}

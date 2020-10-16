@@ -1,4 +1,4 @@
-![Among JS](./banner.svg)
+![Among JS](https://raw.githubusercontent.com/kognise/among-js/main/banner.svg)
 
 Among JS is a set of utilities for interacting with the Among Us protocol written in TypeScript. It's composed of several self-contained libraries which are all published to NPM:
 
@@ -11,11 +11,5 @@ Among JS is a set of utilities for interacting with the Among Us protocol writte
 Among JS was designed with browser support in mind, meaning when the Hazel library supports WebSocket transports you'll be able to run Among Us bots and clients fully on the web *as well as* Node.js!
 
 In it's current state not all packets and events are supported but I'm focusing on rapid iteration. Every current feature is fully tested and stable.
-
-## Development
-
-This is a monorepo using Yarn, TSDX, and Lerna. Woo, buzzwords!
-
-Anyways, after cloning the repo, you'll want to run `yarn` to install dependencies and `yarn dev` to start a TypeScript build watcher. Then just `node example.js` to run the example code. You can also run `yarn lint` to format all the code for consistency.
 
 You can find more information about the protocol in this [freshly made wiki](https://wiki.weewoo.net/wiki/Protocol) I helped create.
