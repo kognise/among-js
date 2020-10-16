@@ -7,7 +7,14 @@ export declare interface HazelUDPSocket {
   on(event: 'message', cb: (buffer: ByteBuffer) => void): this
 }
 
-// Implementation of the Hazel base protocol.
+/**
+ * Implementation of the Hazel base protocol with a raw UDP transport.
+ * 
+ * This handles things such as different packet types, as well as sending acknowledgements and pings.
+ * 
+ * No parsing is done to the inner packets to maintain separation of concerns. You should be able to
+ * use this with **any** Hazel-based backed without trouble.
+ */
 export class HazelUDPSocket extends EventEmitter {
   private s: dgram.Socket
   private reliableId: number = 0
@@ -64,11 +71,14 @@ export class HazelUDPSocket extends EventEmitter {
     })
   }
 
+  /**
+   * Reliable packets require an acknowledgement packet in response
+   * or the server will throw a tantrum. This will send that response.
+   * {@link https://wiki.weewoo.net/wiki/Protocol#Acknowledgement}
+   * 
+   * @param buffer Packet buffer
+   */
   private handleReliableResponse(buffer: Buffer) {
-    // Reliable packets require an acknowledgement packet in response
-    // or the server will throw a tantrum.
-    // https://wiki.weewoo.net/wiki/Protocol#Acknowledgement
-
     const reliableId = (buffer[1] << 8) + buffer[2]
     const bb = new ByteBuffer(4)
     bb.writeByte(PacketType.Acknowledgement)
@@ -77,19 +87,26 @@ export class HazelUDPSocket extends EventEmitter {
     this.send(bb)
   }
 
+  /**
+   * Generic handler for packets with payloads, for both reliable
+   * and normal packets. Calls the appropriate event listeners.
+   * 
+   * @param buffer Packet buffer
+   * @param offset Position the packet begins at
+   */
   private handlePayloadPacket(buffer: Buffer, offset: number) {
-    // Generic handler for packets with payloads, for both reliable
-    // and normal packets.
-
     const bb = new ByteBuffer(buffer.length - offset, true)
     bb.append(buffer.slice(offset))
     bb.clear()
     this.emit('message', bb)
   }
 
+  /**
+   * Hacky helper to wait for an acknowledgement before continuing.
+   * 
+   * @param reliableId Nonce of the packet sent
+   */
   private async waitForAcknowledgement(reliableId: number) {
-    // Hacky helper to wait for an acknowledgement before continuing.
-
     await new Promise(resolve => {
       const cb = (msg: Buffer) => {
         const packetType: PacketType = msg[0]
@@ -106,18 +123,27 @@ export class HazelUDPSocket extends EventEmitter {
     })
   }
 
+  /**
+   * Bind the socket to an ip and port.
+   * 
+   * @param port Port
+   * @param ip IPV4 address
+   */
   connect(port: number, ip?: string) {
-    // Bind the socket to an ip and port.
     return new Promise(resolve => {
       this.s.connect(port, ip, () => resolve())
     })
   }
 
+  /**
+   * Helper for sending reliable packer. Automatically handles waiting for
+   * acknowledgements and incrementing the reliable id.
+   * {@link https://wiki.weewoo.net/wiki/Protocol#Reliable_Packets}
+   * 
+   * @param sendOption Type of packet to send
+   * @param data Data as a byte buffer
+   */
   async sendReliable(sendOption: PacketType, data: ByteBuffer) {
-    // Helper for sending reliable packer. Automatically handles waiting for
-    // acknowledgements and incrementing the reliable id.
-    // https://wiki.weewoo.net/wiki/Protocol#Reliable_Packets
-
     const reliableId = ++this.reliableId
     const bb = new ByteBuffer(3 + data.capacity())
     bb.writeByte(sendOption)
@@ -129,9 +155,12 @@ export class HazelUDPSocket extends EventEmitter {
     await ack
   }
 
+  /**
+   * Wrapper for asyncronously sending raw packets.
+   * 
+   * @param bb Data as a byte buffer
+   */
   send(bb: ByteBuffer) {
-    // Just a simple wrapper for asyncronously sending ByteBuffer packets.
-
     return new Promise((resolve, reject) => {
       this.s.send(bb.buffer, err => {
         if (err) {
@@ -143,12 +172,14 @@ export class HazelUDPSocket extends EventEmitter {
     })
   }
 
+  /**
+   * Disconnect cleanly by sending a disconnect packet and
+   * waiting for a response. Otherwise the next time we try
+   * to connect the server won't respond to the hello.
+   * 
+   * {@link https://wiki.weewoo.net/wiki/Protocol#Disconnect}
+   */
   async disconnect() {
-    // Disconnect cleanly by sending a disconnect packet and
-    // waiting for a response. Otherwise the next time we try
-    // to connect the server won't respond to the hello.
-    // https://wiki.weewoo.net/wiki/Protocol#Disconnect
-
     const dc = new ByteBuffer(1)
     dc.writeByte(9)
 
