@@ -16,8 +16,8 @@ import { EventEmitter } from 'events'
 
 interface Game {
   code: string
-  playerId: number
-  hostId: number
+  playerClientId: number
+  hostClientId: number
 }
 
 interface JoinedJoinResult {
@@ -92,8 +92,8 @@ export class AmongUsSocket extends EventEmitter {
               state: 'joined',
               game: {
                 code,
-                playerId: payload.playerId,
-                hostId: payload.hostId
+                playerClientId: payload.playerClientId,
+                hostClientId: payload.hostClientId
               }
             })
           } else if (payload.type === PayloadType.Redirect) {
@@ -181,7 +181,7 @@ export class AmongUsSocket extends EventEmitter {
                   generatePayloads([
                     {
                       type: PayloadType.GameDataTo,
-                      recipient: this.game!.hostId,
+                      recipient: this.game!.hostClientId,
                       code: v2CodeToNumber(this.game!.code),
                       parts: [
                         {
@@ -227,7 +227,7 @@ export class AmongUsSocket extends EventEmitter {
           parts: [
             {
               type: GameDataType.SceneChange,
-              playerId: this.game!.playerId,
+              playerClientId: this.game!.playerClientId,
               location: SceneChangeLocation.OnlineGame
             }
           ]

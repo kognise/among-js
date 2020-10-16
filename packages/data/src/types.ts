@@ -38,8 +38,8 @@ export interface GameDataToPayloadPacket {
 export interface JoinedGamePayloadPacket {
   type: PayloadType.JoinedGame
   code: number
-  playerId: number
-  hostId: number
+  playerClientId: number
+  hostClientId: number
 }
 
 // https://wiki.weewoo.net/wiki/Protocol#Server_To_Client
@@ -90,7 +90,7 @@ export interface DataGameDataPacket {
 // https://wiki.weewoo.net/wiki/Protocol#6_-_Scene_Change
 export interface SceneChangeGameDataPacket {
   type: GameDataType.SceneChange
-  playerId: number
+  playerClientId: number
   location: SceneChangeLocation
 }
 
@@ -100,7 +100,10 @@ export type RPCGameDataPacket =
   | SyncSettingsRPCGameDataPacket
   | CheckNameRPCGameDataPacket
   | CheckColorRPCGameDataPacket
+  | SetColorRPCGameDataPacket
   | UnparsedRPCGameDataPacket
+  | UpdateGameDataRPCGameDataPacket
+  | SetNameRPCGameDataPacket
 
 export interface SyncSettingsRPCGameDataPacket {
   type: GameDataType.RPC
@@ -116,6 +119,13 @@ export interface CheckNameRPCGameDataPacket {
   name: string
 }
 
+export interface SetNameRPCGameDataPacket {
+  type: GameDataType.RPC
+  flag: RPCFlag.SetName
+  netId: number
+  name: string
+}
+
 export interface CheckColorRPCGameDataPacket {
   type: GameDataType.RPC
   flag: RPCFlag.CheckColor
@@ -123,12 +133,31 @@ export interface CheckColorRPCGameDataPacket {
   color: PlayerColor
 }
 
+export interface SetColorRPCGameDataPacket {
+  type: GameDataType.RPC
+  flag: RPCFlag.SetColor
+  netId: number
+  color: PlayerColor
+}
+
+export interface UpdateGameDataRPCGameDataPacket {
+  type: GameDataType.RPC
+  flag: RPCFlag.UpdateGameData
+  netId: number
+  players: GameData[]
+}
+
 export interface UnparsedRPCGameDataPacket {
   type: GameDataType.RPC
   // Next line is cursed, fuck typescript
   flag: Exclude<
-    Exclude<Exclude<RPCFlag, RPCFlag.SyncSettings>, RPCFlag.CheckName>,
-    RPCFlag.CheckColor
+    RPCFlag,
+    | RPCFlag.CheckName
+    | RPCFlag.SyncSettings
+    | RPCFlag.CheckColor
+    | RPCFlag.SetName
+    | RPCFlag.SetColor
+    | RPCFlag.UpdateGameData
   >
   netId: number
   data: ByteBuffer
@@ -163,4 +192,24 @@ export interface GameOptions {
   emergencyCooldown: number
   confirmEjects: boolean
   visualTasks: boolean
+}
+
+// Game data
+export interface GameData {
+  playerId: number
+  playerName: string
+  color: PlayerColor
+  hat: number
+  pet: number
+  skin: number
+  disconnected: boolean
+  isImpostor: boolean
+  isDead: boolean
+  tasks: TaskInfo[]
+}
+
+// Task info
+export interface TaskInfo {
+  id: number
+  complete: false
 }

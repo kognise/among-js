@@ -12,9 +12,11 @@ import {
   PayloadPacket,
   prettyDisconnectReason,
   prettyPayloadType,
-  prettyRPCFlag
+  prettyRPCFlag,
+  GameData
 } from '@among-js/data'
 import { readPacked, Vector2 } from '@among-js/util'
+import { readGameData } from './game-data'
 import { readGameOptions } from './game-options'
 
 const parseRPCGameDataPacket = (
@@ -38,9 +40,11 @@ const parseRPCGameDataPacket = (
       }
     }
 
-    case RPCFlag.CheckName: {
+    case RPCFlag.CheckName:
+    case RPCFlag.SetName: {
       const length = buffer.readByte()
       const name = buffer.readString(length)
+      // @ts-ignore
       return {
         type: GameDataType.RPC,
         netId,
@@ -49,12 +53,27 @@ const parseRPCGameDataPacket = (
       }
     }
 
-    case RPCFlag.CheckColor: {
+    case RPCFlag.CheckColor:
+    case RPCFlag.SetColor: {
       return {
         type: GameDataType.RPC,
         netId,
         flag,
         color: buffer.readByte()
+      }
+    }
+
+    case RPCFlag.UpdateGameData: {
+      const players: GameData[] = []
+      while (buffer.offset < beforeReadPacked + dataLength) {
+        players.push(readGameData(buffer))
+      }
+
+      return {
+        type: GameDataType.RPC,
+        netId,
+        flag,
+        players
       }
     }
 
@@ -190,15 +209,15 @@ export const parsePayloads = (buffer: ByteBuffer): PayloadPacket[] => {
 
       case PayloadType.JoinedGame: {
         const codeNumber = buffer.readInt32()
-        const playerId = buffer.readUint32()
-        const hostId = buffer.readUint32()
+        const playerClientId = buffer.readUint32()
+        const hostClientId = buffer.readUint32()
         buffer.skip(payloadLength - (buffer.offset - startOffset))
 
         packets.push({
           type: payloadType,
           code: codeNumber,
-          playerId,
-          hostId
+          playerClientId,
+          hostClientId
         })
 
         break

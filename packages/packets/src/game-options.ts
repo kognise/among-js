@@ -1,9 +1,9 @@
 import { GameOptions, Language, AmongUsMap } from '@among-js/data'
 import { pack, readPacked } from '@among-js/util'
+import ByteBuffer from 'bytebuffer'
 
 const baseLength = 44
 const packedBaseLength = pack(baseLength)
-export const gameOptionsLength = packedBaseLength.length + baseLength
 
 export const readGameOptions = (buffer: ByteBuffer): GameOptions => {
   readPacked(buffer) // Length
@@ -56,10 +56,9 @@ export const readGameOptions = (buffer: ByteBuffer): GameOptions => {
   }
 }
 
-export const writeGameOptions = (
-  gameOptions: GameOptions,
-  buffer: ByteBuffer
-) => {
+export const serializeGameOptions = (gameOptions: GameOptions): ByteBuffer => {
+  const buffer = new ByteBuffer(undefined, true)
+
   buffer.append(packedBaseLength)
   buffer.writeByte(3)
 
@@ -86,4 +85,6 @@ export const writeGameOptions = (
   buffer.writeByte(gameOptions.emergencyCooldown)
   buffer.writeByte(gameOptions.confirmEjects ? 1 : 0)
   buffer.writeByte(gameOptions.visualTasks ? 1 : 0)
+
+  return buffer
 }

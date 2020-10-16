@@ -16,7 +16,8 @@ import {
   RPCFlag
 } from '@among-js/data'
 import { pack } from '@among-js/util'
-import { gameOptionsLength, writeGameOptions } from './game-options'
+import { serializeGameOptions } from './game-options'
+import { serializeGameData } from './game-data'
 
 const generateDataGameDataPacket = (packet: DataGameDataPacket): ByteBuffer => {
   const packedNetId = pack(packet.netId)
@@ -36,14 +37,14 @@ const generateDataGameDataPacket = (packet: DataGameDataPacket): ByteBuffer => {
 const generateSceneChangeGameDataPacket = (
   packet: SceneChangeGameDataPacket
 ): ByteBuffer => {
-  const packedPlayerId = pack(packet.playerId)
-  const size = packedPlayerId.length + 1 + packet.location.length
+  const packedPlayerClientId = pack(packet.playerClientId)
+  const size = packedPlayerClientId.length + 1 + packet.location.length
 
   const buffer = new ByteBuffer(3 + size, true)
   buffer.writeInt16(size)
   buffer.writeByte(packet.type)
 
-  buffer.append(packedPlayerId)
+  buffer.append(packedPlayerClientId)
   buffer.writeByte(packet.location.length)
   buffer.writeString(packet.location)
 
@@ -54,22 +55,27 @@ const generateRPCGameDataPacket = (packet: RPCGameDataPacket): ByteBuffer => {
   switch (packet.flag) {
     case RPCFlag.SyncSettings: {
       const packedNetId = pack(packet.netId)
+      const serializedGameOptions = serializeGameOptions(packet.gameOptions)
+
       const buffer = new ByteBuffer(
-        3 + packedNetId.length + 1 + gameOptionsLength,
+        3 + packedNetId.length + 1 + serializedGameOptions.offset,
         true
       )
 
-      buffer.writeInt16(packedNetId.length + 1 + gameOptionsLength)
+      buffer.writeInt16(packedNetId.length + 1 + serializedGameOptions.offset)
       buffer.writeByte(packet.type)
 
       buffer.append(packedNetId)
       buffer.writeByte(packet.flag)
 
-      writeGameOptions(packet.gameOptions, buffer)
+      buffer.append(
+        serializedGameOptions.buffer.slice(0, serializedGameOptions.offset)
+      )
       return buffer
     }
 
-    case RPCFlag.CheckName: {
+    case RPCFlag.CheckName:
+    case RPCFlag.SetName: {
       const packedNetId = pack(packet.netId)
       const buffer = new ByteBuffer(
         3 + packedNetId.length + 2 + packet.name.length,
@@ -88,7 +94,31 @@ const generateRPCGameDataPacket = (packet: RPCGameDataPacket): ByteBuffer => {
       return buffer
     }
 
-    case RPCFlag.CheckColor: {
+    case RPCFlag.UpdateGameData: {
+      const dataBuffer = new ByteBuffer(undefined, true)
+      for (const player of packet.players) {
+        const serialized = serializeGameData(player)
+        dataBuffer.append(serialized.buffer.slice(0, serialized.offset))
+      }
+
+      const packedNetId = pack(packet.netId)
+      const buffer = new ByteBuffer(
+        3 + packedNetId.length + 1 + dataBuffer.offset,
+        true
+      )
+
+      buffer.writeInt16(packedNetId.length + 1 + dataBuffer.offset)
+      buffer.writeByte(packet.type)
+
+      buffer.append(packedNetId)
+      buffer.writeByte(packet.flag)
+      buffer.append(dataBuffer.slice(0, dataBuffer.offset))
+
+      return buffer
+    }
+
+    case RPCFlag.CheckColor:
+    case RPCFlag.SetColor: {
       const packedNetId = pack(packet.netId)
       const buffer = new ByteBuffer(3 + packedNetId.length + 2, true)
 
