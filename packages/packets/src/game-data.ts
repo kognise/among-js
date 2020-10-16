@@ -1,7 +1,6 @@
-import { GameData, PlayerColor, TaskInfo } from '@among-js/data'
+import { GameData, PlayerColor, TaskInfo, TaskType } from '@among-js/data'
 import { pack, readPacked } from '@among-js/util'
 import ByteBuffer from 'bytebuffer'
-import { TaskType } from 'packages/data/dist'
 
 /**
  * Read a game data object from a buffer.
