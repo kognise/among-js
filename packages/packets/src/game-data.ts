@@ -1,4 +1,4 @@
-import { GameData, PlayerColor } from '@among-js/data'
+import { GameData, PlayerColor, TaskInfo } from '@among-js/data'
 import { pack, readPacked } from '@among-js/util'
 import ByteBuffer from 'bytebuffer'
 
@@ -24,8 +24,14 @@ export const readGameData = (buffer: ByteBuffer): GameData => {
   const isImpostor = (flags & 2) > 0
   const isDead = (flags & 4) > 0
 
-  // TODO: Read tasks
-  buffer.readByte()
+  const taskCount = buffer.readByte()
+  const tasks: TaskInfo[] = []
+
+  for (let i = 0; i < taskCount; i++) {
+    const id = readPacked(buffer)
+    const complete = buffer.readByte() === 1
+    tasks.push({ id, complete })
+  }
 
   return {
     playerId,
@@ -37,7 +43,7 @@ export const readGameData = (buffer: ByteBuffer): GameData => {
     disconnected,
     isImpostor,
     isDead,
-    tasks: []
+    tasks
   }
 }
 
