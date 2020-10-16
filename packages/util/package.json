@@ -1,6 +1,6 @@
 {
   "name": "@among-js/util",
-  "version": "0.0.10",
+  "version": "0.1.0",
   "description": "Among JS helper functions",
   "author": "Felix Mattick <felix.mattick@gmail.com>",
   "scripts": {
