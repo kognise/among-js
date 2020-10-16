@@ -1,4 +1,4 @@
-![Among JS](./bannner.svg)
+![Among JS](./banner.svg)
 
 Among JS is a set of utilities for interacting with the Among Us protocol written in TypeScript. It's composed of several self-contained libraries which are all published to NPM:
 
