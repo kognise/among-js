@@ -1,3 +1,11 @@
+/**
+ * Pack a number into the smallest number of bytes possible.
+ * 
+ * @remarks
+ * See {@link https://wiki.weewoo.net/wiki/Packing | the wiki page on packing} for more information on this process.
+ * 
+ * @param value Number to pack
+ */
 export const pack = (value: number) => {
   const array = []
 
@@ -14,6 +22,14 @@ export const pack = (value: number) => {
   return Buffer.from(array)
 }
 
+/**
+ * Read and return a packed number from a buffer, incrementing the offset by the number of bytes.
+ * 
+ * @remarks
+ * See {@link https://wiki.weewoo.net/wiki/Packing | the wiki page on packing} for more information on this process.
+ * 
+ * @param bb Buffer to read from
+ */
 export const readPacked = (bb: ByteBuffer) => {
   let readMore = true
   let shift = 0
@@ -35,6 +51,13 @@ export const readPacked = (bb: ByteBuffer) => {
   return output
 }
 
+/**
+ * Linearly interpolate a number between 0 and 1 to be between the lower and upper bound.
+ * 
+ * @param min Lower bound
+ * @param max Upper bound
+ * @param value Value to lerp
+ */
 export const lerp = (min: number, max: number, value: number) => {
   if (value < 0) {
     value = 0
@@ -45,6 +68,13 @@ export const lerp = (min: number, max: number, value: number) => {
   return min + (max - min) * value
 }
 
+/**
+ * Reverse of {@linkcode lerp}. Takes a value between the lower and upper bound and maps it to a number between 0 and 1.
+ * 
+ * @param min Lower bound
+ * @param max Upper bound
+ * @param value Value to unlerp
+ */
 export const unlerp = (min: number, max: number, value: number) => {
   return (value - min) / (max - min)
 }

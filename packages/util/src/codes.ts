@@ -29,6 +29,11 @@ const v2LookupTable: Record<number, number> = {
   25: 0x11
 }
 
+/**
+ * Converts a V2 game code into its number form.
+ * 
+ * @param code Game code as a string
+ */
 export const v2CodeToNumber = (code: string) => {
   const b1 = v2LookupTable[code.toUpperCase()[0].charCodeAt(0) - 65]
   const b2 = v2LookupTable[code.toUpperCase()[1].charCodeAt(0) - 65]
