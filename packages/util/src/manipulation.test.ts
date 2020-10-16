@@ -40,6 +40,7 @@ test('pack works', () => {
 test('can read packed numbers', () => {
   const bb = new ByteBuffer(1)
   bb.writeByte(0)
+  bb.clear()
   expect(readPacked(bb)).toBe(0)
   expect(bb.offset).toBe(1)
 })

@@ -10,7 +10,7 @@ Among JS is a set of utilities for interacting with the Among Us protocol writte
 
 Among JS was designed with browser support in mind, meaning when the Hazel library supports WebSocket transports you'll be able to run Among Us bots and clients fully on the web *as well as* Node.js!
 
-In it's current state not all packets and events are supported but I'm focusing on rapid iteration. Every current feature is fully tested and stable.
+In it's current state not all packets and events are supported but I'm focusing on rapid iteration. Every current feature is fully manually tested and stable. Currently unit test coverage is low but increasing.
 
 You can find more information about the protocol in this [freshly made wiki](https://wiki.weewoo.net/wiki/Protocol) I helped create.
 
