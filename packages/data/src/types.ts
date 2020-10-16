@@ -277,6 +277,6 @@ export interface GameData {
  * In-game task info.
  */
 export interface TaskInfo {
-  id: number
+  type: number
   complete: boolean
 }

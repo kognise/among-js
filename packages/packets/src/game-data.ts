@@ -1,6 +1,7 @@
 import { GameData, PlayerColor, TaskInfo } from '@among-js/data'
 import { pack, readPacked } from '@among-js/util'
 import ByteBuffer from 'bytebuffer'
+import { TaskType } from 'packages/data/dist'
 
 /**
  * Read a game data object from a buffer.
@@ -28,9 +29,9 @@ export const readGameData = (buffer: ByteBuffer): GameData => {
   const tasks: TaskInfo[] = []
 
   for (let i = 0; i < taskCount; i++) {
-    const id = readPacked(buffer)
+    const type: TaskType = readPacked(buffer)
     const complete = buffer.readByte() === 1
-    tasks.push({ id, complete })
+    tasks.push({ type, complete })
   }
 
   return {
