@@ -225,6 +225,13 @@ const generateGameDataToPayloadPacket = (
   return buffer
 }
 
+/**
+ * Take a list of typed object packets and serialize them into a byte
+ * buffer to send over the network. This is the main function of this
+ * library, see the `@among-us/data` docs for all packet types.
+ * 
+ * @param packets Packets to serialize
+ */
 export const generatePayloads = (packets: PayloadPacket[]): ByteBuffer => {
   const serializedPackets: ByteBuffer[] = []
 

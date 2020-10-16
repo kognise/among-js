@@ -193,6 +193,12 @@ const parseGameDataPayloadPacket = (
   }
 }
 
+/**
+ * Take a buffer of bytes and parse it into a rich object structure for
+ * consuming for code. See the `@among-us/data` docs for all packet types.
+ * 
+ * @param packets Packets to serialize
+ */
 export const parsePayloads = (buffer: ByteBuffer): PayloadPacket[] => {
   const packets: PayloadPacket[] = []
 

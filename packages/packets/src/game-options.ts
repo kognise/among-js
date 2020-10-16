@@ -5,6 +5,11 @@ import ByteBuffer from 'bytebuffer'
 const baseLength = 44
 const packedBaseLength = pack(baseLength)
 
+/**
+ * Read game options data from a buffer.
+ * 
+ * @param buffer Buffer to read from
+ */
 export const readGameOptions = (buffer: ByteBuffer): GameOptions => {
   readPacked(buffer) // Length
   buffer.readByte() // Version
@@ -56,6 +61,15 @@ export const readGameOptions = (buffer: ByteBuffer): GameOptions => {
   }
 }
 
+/**
+ * Serialize game options data into a buffer.
+ * 
+ * @remarks
+ * The buffer is variable-size, meaning you should not rely on `buffer.capacity()`
+ * to get the length. Instead, use `buffer.offset`.
+ * 
+ * @param gameOptions Game options data
+ */
 export const serializeGameOptions = (gameOptions: GameOptions): ByteBuffer => {
   const buffer = new ByteBuffer(undefined, true)
 

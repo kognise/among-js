@@ -2,6 +2,11 @@ import { GameData, PlayerColor } from '@among-js/data'
 import { pack, readPacked } from '@among-js/util'
 import ByteBuffer from 'bytebuffer'
 
+/**
+ * Read a game data object from a buffer.
+ * 
+ * @param buffer Buffer to read from
+ */
 export const readGameData = (buffer: ByteBuffer): GameData => {
   buffer.readInt16()
   const playerId = buffer.readByte()
@@ -36,6 +41,15 @@ export const readGameData = (buffer: ByteBuffer): GameData => {
   }
 }
 
+/**
+ * Serialize a game data object into a buffer.
+ * 
+ * @remarks
+ * The buffer is variable-size, meaning you should not rely on `buffer.capacity()`
+ * to get the length. Instead, use `buffer.offset`.
+ * 
+ * @param gameData Game data
+ */
 export const serializeGameData = (gameData: GameData): ByteBuffer => {
   const buffer = new ByteBuffer(undefined, true)
 
