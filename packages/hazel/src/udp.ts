@@ -43,6 +43,9 @@ export class HazelUDPSocket extends EventEmitter {
   private s: dgram.Socket
   private reliableId: number = 0
 
+  /**
+   * @param type Type of socket, for now this should always be `udp4`
+   */
   constructor(type: dgram.SocketType) {
     super()
 

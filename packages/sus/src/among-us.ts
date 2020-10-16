@@ -45,22 +45,60 @@ export declare interface AmongUsSocket {
   ): this
 }
 
-// Clean wrapper for the Among Us protocol.
-// (Well, the usage is clean, the internal code isn't.)
+/**
+ * Simple and clean wrapper for making Among Us clients and bots.
+ * 
+ * If you're reading this through TypeDoc, I **highly** recommend unchecking "Inherited"
+ * in the top right corner. It'll make it so you only have to see the methods and properties
+ * that are pertinent to Among JS.
+ * 
+ * @example
+ * ```typescript
+ * import { AmongUsSocket } from '@among-js/sus'
+ * import { PlayerColor, matchmakingServers } from '@among-js/data'
+ * 
+ * const socket = new AmongUsSocket('testing')
+ * await socket.connect(22023, matchmakingServers.NA[1])
+ * await socket.joinGame('ABCDEF')
+ * await socket.spawn(PlayerColor.Lime)
+ * ```
+ */
 export class AmongUsSocket extends EventEmitter {
-  s: HazelUDPSocket
   private name: string
   private game: Game | null = null
   private moveSequence: number = -1
   private components: GameComponent[] = []
+
+  /**
+   * The internal Hazel socket. This is exposed in case you want to
+   * do things like sending raw packets or disconnecting.
+   */
+  s: HazelUDPSocket
+
+  /**
+   * Whether or not the client is ready to move around and perform actions.
+   */
   ready = false
 
+  /**
+   * @param name Username to login with
+   */
   constructor(name: string) {
     super()
     this.name = name
     this.s = new HazelUDPSocket('udp4')
   }
 
+  /**
+   * Connect to a port and ip address. This also performs a handshake to properly initialize the version and username.
+   * 
+   * If you don't know what server to connect to, get an ip from the `matchmakingServers` export from `@among-js/data`
+   * and use 22023 as a port. You may also want to consider setting up a local {@link https://github.com/AeonLucid/Impostor | Impostor}
+   * server for testing without putting load on the official servers.
+   * 
+   * @param port Port
+   * @param ip Ip address
+   */
   async connect(port: number, ip: string) {
     await this.s.connect(port, ip)
 
@@ -73,14 +111,15 @@ export class AmongUsSocket extends EventEmitter {
     await this.s.sendReliable(PacketType.Hello, hello)
   }
 
+  /**
+   * Shitty code to attempt joining a game. This will respond with one of three states:
+   *   - Joined, meaning no further action must be taken
+   *   - Redirect, meaning the current socket should be scrapped and the join should be retried on the given ip and port
+   *   - Error, meaning it should throw an error
+   * 
+   * @param code Game code to join, as a string
+   */
   private async tryJoin(code: string) {
-    // Shitty code to attempt joining a game. This will respond with
-    // one of three states:
-    // - Joined, meaning no further action must be taken
-    // - Redirect, meaning the current socket should be scrapped and
-    //   the join should be retried on the given ip and port
-    // - Error, meaning it should throw an error
-
     const promise = new Promise<JoinResult>(resolve => {
       const cb = (buffer: ByteBuffer) => {
         const payloads = parsePayloads(buffer)
@@ -133,9 +172,14 @@ export class AmongUsSocket extends EventEmitter {
     return await promise
   }
 
+  /**
+   * Join an Among Us game, and handle join errors as well as redirects.
+   * **This only connects! To get an avatar, receive events, and move around
+   * you must use the `spawn` function.`
+   * 
+   * @param code Game code to join, as a string
+   */
   async joinGame(code: string) {
-    // Join a game and handle redirects and such. Uses tryJoin.
-
     let joinResult: JoinResult
 
     while (true) {
@@ -156,9 +200,12 @@ export class AmongUsSocket extends EventEmitter {
     }
   }
 
+  /**
+   * Spawn the player with an avatar and username, and begin emitting events.
+   * 
+   * @param color The color to spawn with, from `@among-js/data`
+   */
   async spawn(color: PlayerColor) {
-    // Spawn the player with an avatar and username.
-
     const promise = new Promise(resolve => {
       this.s.on('message', async buffer => {
         const payloads = parsePayloads(buffer)
@@ -239,6 +286,14 @@ export class AmongUsSocket extends EventEmitter {
     this.ready = true
   }
 
+  /**
+   * Move to a position with a velocity.
+   * 
+   * @param position Position to move to
+   * @param velocity Character controller velocity
+   * 
+   * @beta
+   */
   async move(position: Vector2, velocity: Vector2) {
     await this.s.sendReliable(
       PacketType.Reliable,

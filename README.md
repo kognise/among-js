@@ -13,3 +13,5 @@ Among JS was designed with browser support in mind, meaning when the Hazel libra
 In it's current state not all packets and events are supported but I'm focusing on rapid iteration. Every current feature is fully tested and stable.
 
 You can find more information about the protocol in this [freshly made wiki](https://wiki.weewoo.net/wiki/Protocol) I helped create.
+
+They're a bit of a WIP, but feel free to [read the documentation](https://among-js-docs.vercel.app/). If you have any feedback, create a GitHub issue or shoot be a DM on Discord @Kognise#6356.
