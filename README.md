@@ -1,6 +1,6 @@
-# Among JS
+![Among JS](./bannner.svg)
 
-The most comprehensive set of utilities for interacting with the Among Us protocol written in TypeScript. It's composed of several self-contained libraries:
+Among JS is a set of utilities for interacting with the Among Us protocol written in TypeScript. It's composed of several self-contained libraries which are all published to NPM:
 
 - Data: constants, enums, types, static game data, and more
 - Hazel: a library for interacting with the Hazel network protocol
