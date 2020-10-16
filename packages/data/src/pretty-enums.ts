@@ -1,6 +1,6 @@
 /**
- * Gunctions to convert enums into human-readable names for debugging.
  * @packageDocumentation
+ * Functions to convert enums into human-readable names for debugging.
  */
 
 import { PayloadType, DisconnectReason, RPCFlag, GameDataType, PlayerColor } from './enums'

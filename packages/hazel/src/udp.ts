@@ -14,6 +14,30 @@ export declare interface HazelUDPSocket {
  * 
  * No parsing is done to the inner packets to maintain separation of concerns. You should be able to
  * use this with **any** Hazel-based backed without trouble.
+ * 
+ * The main methods you'll be using are:
+ * - `send` and `sendReliable` for sending messages
+ * - `connect` and `disconnect` for, well, connecting and disconnecting
+ * - `on` to listen for the message event
+ * 
+ * In 99% of use cases you'll also want `@among-js/data` for packet type enums and more,
+ * as well as `bytebuffer` for a nice buffer library.
+ * 
+ * @example
+ * ```typescript
+ * import { HazelUDPSocket } from '@among-js/hazel'
+ * import { PacketType } from '@among-js/data'
+ * import ByteBuffer from 'bytebuffer'
+ * 
+ * const socket = new HazelUDPSocket('udp4')
+ * 
+ * socket.on('message', (buffer) => {
+ *   console.log(buffer.toDebug(true))
+ * })
+ * 
+ * // Send an empty hello packet
+ * await socket.sendReliable(PacketType.Hello, new ByteBuffer(0))
+ * ```
  */
 export class HazelUDPSocket extends EventEmitter {
   private s: dgram.Socket
