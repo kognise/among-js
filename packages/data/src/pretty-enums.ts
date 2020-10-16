@@ -1,6 +1,7 @@
 // Just functions to convert enums into human-readable
 // names for debugging.
 
+import { PlayerColor } from '../dist'
 import { PayloadType, DisconnectReason, RPCFlag, GameDataType } from './enums'
 
 export const prettyPayloadType = (type: PayloadType) => {
@@ -83,11 +84,6 @@ export const prettyDisconnectReason = (reason: DisconnectReason) => {
   }
 }
 
-// @deprecated
-export const prettyRPCType = (type: RPCFlag) => {
-  console.warn(`prettyRPCType is deprecated, please use prettyRPCFlag instead`)
-  return prettyRPCFlag(type)
-}
 export const prettyRPCFlag = (type: RPCFlag) => {
   switch (type) {
     case RPCFlag.PlayAnimation:
@@ -171,5 +167,22 @@ export const prettyGameDataType = (type: GameDataType) => {
       return 'ready'
     case GameDataType.ChangeSettings:
       return 'change settings'
+  }
+}
+
+export const prettyPlayerColor = (color: PlayerColor) => {
+  switch (color) {
+    case PlayerColor.Red: return 'red'
+    case PlayerColor.Blue: return 'blue'
+    case PlayerColor.DarkGreen: return 'dark green'
+    case PlayerColor.Pink: return 'pink'
+    case PlayerColor.Orange: return 'orange'
+    case PlayerColor.Yellow: return 'yellow'
+    case PlayerColor.Black: return 'black'
+    case PlayerColor.White: return 'white'
+    case PlayerColor.Purple: return 'purple'
+    case PlayerColor.Brown: return 'brown'
+    case PlayerColor.Cyan: return 'cyan'
+    case PlayerColor.Lime: return 'lime'
   }
 }
