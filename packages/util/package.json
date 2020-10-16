@@ -7,6 +7,7 @@
     "dev": "tsdx watch --tsconfig tsconfig.build.json --verbose --noClean",
     "build": "tsdx build --tsconfig tsconfig.build.json",
     "lint": "tsdx lint",
+    "test": "tsdx test",
     "prepublish": "yarn build"
   },
   "main": "dist/index.js",

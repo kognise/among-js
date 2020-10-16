@@ -17,6 +17,7 @@
     "lerna": "lerna",
     "dev": "lerna run dev --stream --parallel",
     "lint": "lerna run lint -- --fix",
+    "test": "lerna run test --",
     "build": "lerna run build",
     "prepublish": "lerna run prepublish"
   },
