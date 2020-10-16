@@ -1,8 +1,6 @@
 // Just functions to convert enums into human-readable
 // names for debugging.
-
-import { PlayerColor } from '../dist'
-import { PayloadType, DisconnectReason, RPCFlag, GameDataType } from './enums'
+import { PayloadType, DisconnectReason, RPCFlag, GameDataType, PlayerColor } from './enums'
 
 export const prettyPayloadType = (type: PayloadType) => {
   switch (type) {
