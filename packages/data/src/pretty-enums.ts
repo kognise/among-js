@@ -1,7 +1,15 @@
-// Just functions to convert enums into human-readable
-// names for debugging.
+/**
+ * Gunctions to convert enums into human-readable names for debugging.
+ * @packageDocumentation
+ */
+
 import { PayloadType, DisconnectReason, RPCFlag, GameDataType, PlayerColor } from './enums'
 
+/**
+ * Convert a payload type to a human-readable string.
+ * 
+ * @param type Payload type
+ */
 export const prettyPayloadType = (type: PayloadType) => {
   switch (type) {
     case PayloadType.CreateGame:
@@ -42,6 +50,11 @@ export const prettyPayloadType = (type: PayloadType) => {
   }
 }
 
+/**
+ * Convert a disconnect reason to a human-readable string as found in the game.
+ * 
+ * @param type Disconnect reason
+ */
 export const prettyDisconnectReason = (reason: DisconnectReason) => {
   switch (reason) {
     case DisconnectReason.GameFull:
@@ -82,6 +95,11 @@ export const prettyDisconnectReason = (reason: DisconnectReason) => {
   }
 }
 
+/**
+ * Convert an RPC flag to a human-readable string
+ * 
+ * @param type RPC flag
+ */
 export const prettyRPCFlag = (type: RPCFlag) => {
   switch (type) {
     case RPCFlag.PlayAnimation:
@@ -149,6 +167,11 @@ export const prettyRPCFlag = (type: RPCFlag) => {
   }
 }
 
+/**
+ * Convert a game data type to a human-readable string.
+ * 
+ * @param type Game data type
+ */
 export const prettyGameDataType = (type: GameDataType) => {
   switch (type) {
     case GameDataType.Data:
@@ -168,6 +191,11 @@ export const prettyGameDataType = (type: GameDataType) => {
   }
 }
 
+/**
+ * Convert a player color to a human-readable string.
+ * 
+ * @param type Player color
+ */
 export const prettyPlayerColor = (color: PlayerColor) => {
   switch (color) {
     case PlayerColor.Red: return 'red'

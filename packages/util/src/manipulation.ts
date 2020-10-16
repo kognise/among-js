@@ -53,6 +53,7 @@ export const readPacked = (bb: ByteBuffer) => {
 
 /**
  * Linearly interpolate a number between 0 and 1 to be between the lower and upper bound.
+ * See `unlerp` for the opposite of this.
  * 
  * @param min Lower bound
  * @param max Upper bound
@@ -69,7 +70,7 @@ export const lerp = (min: number, max: number, value: number) => {
 }
 
 /**
- * Reverse of {@linkcode lerp}. Takes a value between the lower and upper bound and maps it to a number between 0 and 1.
+ * Reverse of `lerp`. Takes a value between the lower and upper bound and maps it to a number between 0 and 1.
  * 
  * @param min Lower bound
  * @param max Upper bound

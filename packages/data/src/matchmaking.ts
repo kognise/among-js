@@ -1,3 +1,6 @@
+/**
+ * Known matchmaking servers by region.
+ */
 export const matchmakingServers = {
   NA: [
     '50.116.1.42',

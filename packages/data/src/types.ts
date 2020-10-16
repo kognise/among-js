@@ -9,8 +9,9 @@ import {
   PlayerColor
 } from './enums'
 
-// Payload packets
-// https://wiki.weewoo.net/wiki/Protocol#Reliable_Packets
+/**
+ * All payload packets. {@link https://wiki.weewoo.net/wiki/Protocol#Reliable_Packets}
+ */
 export type PayloadPacket =
   | GameDataPayloadPacket
   | GameDataToPayloadPacket
@@ -19,14 +20,19 @@ export type PayloadPacket =
   | JoinGameErrorPayloadPacket
   | JoinGameRequestPayloadPacket
 
-// https://wiki.weewoo.net/wiki/Protocol#5.2C_6_-_Game_Data_and_Game_Data_To
+/**
+ * Game data packet. {@link https://wiki.weewoo.net/wiki/Protocol#5.2C_6_-_Game_Data_and_Game_Data_To}
+ */
 export interface GameDataPayloadPacket {
   type: PayloadType.GameData
   code: number
   parts: GameDataPacket[]
 }
 
-// https://wiki.weewoo.net/wiki/Protocol#5.2C_6_-_Game_Data_and_Game_Data_To
+/**
+ * Game data to packet. Similar to `GameDataPayloadPacket` but it has a recipient as well.
+ * {@link https://wiki.weewoo.net/wiki/Protocol#5.2C_6_-_Game_Data_and_Game_Data_To}
+ */
 export interface GameDataToPayloadPacket {
   type: PayloadType.GameDataTo
   code: number
@@ -34,7 +40,9 @@ export interface GameDataToPayloadPacket {
   parts: GameDataPacket[]
 }
 
-// TODO: Document
+/**
+ * Joined game packet, send after joining is a success.
+ */
 export interface JoinedGamePayloadPacket {
   type: PayloadType.JoinedGame
   code: number
@@ -42,34 +50,57 @@ export interface JoinedGamePayloadPacket {
   hostClientId: number
 }
 
-// https://wiki.weewoo.net/wiki/Protocol#Server_To_Client
+/**
+ * Represents an error while joining a game, sent from the server to the client.
+ * 
+ * Be wary that `JoinGameRequestPayloadPacket` has the same payload type but a
+ * different format. You can use `assertJoinGameErrorPayloadPacket` to make sure
+ * that a packet is an error and not a request.
+ * 
+ * {@link https://wiki.weewoo.net/wiki/Protocol#Server_To_Client}
+ */
 export interface JoinGameErrorPayloadPacket {
   type: PayloadType.JoinGame
   reason: Error
 }
 
-// https://wiki.weewoo.net/wiki/Protocol#Client_To_Server
+/**
+ * A request to join a game, sent from the client to the server.
+ * 
+ * Be wary that `JoinGameErrorPayloadPacket` has the same payload type but a
+ * different format. You can use `assertJoinGameRequestPayloadPacket` to make sure
+ * that a packet is a request and not an error.
+ * 
+ * {@link https://wiki.weewoo.net/wiki/Protocol#Client_To_Server}
+ */
 export interface JoinGameRequestPayloadPacket {
   type: PayloadType.JoinGame
   code: number
 }
 
-// https://wiki.weewoo.net/wiki/Protocol#13_-_Redirect
+/**
+ * A packet sent by the server to instruct the client to disconnect
+ * and retry the last message on the given server.
+ * {@link https://wiki.weewoo.net/wiki/Protocol#13_-_Redirect}
+ */
 export interface RedirectPayloadPacket {
   type: PayloadType.Redirect
   port: number
   ip: string
 }
 
-// Game data packets
-// https://wiki.weewoo.net/wiki/Protocol#5.2C_6_-_Game_Data_and_Game_Data_To
+/**
+ * Game data and game data to packets. {@link https://wiki.weewoo.net/wiki/Protocol#5.2C_6_-_Game_Data_and_Game_Data_To}
+ */
 export type GameDataPacket =
   | RPCGameDataPacket
   | SpawnGameDataPacket
   | DataGameDataPacket
   | SceneChangeGameDataPacket
 
-// https://wiki.weewoo.net/wiki/Protocol#4_-_Spawn
+/**
+ * Packet to spawn an entity with a list of components. {@link https://wiki.weewoo.net/wiki/Protocol#4_-_Spawn}
+ */
 export interface SpawnGameDataPacket {
   type: GameDataType.Spawn
   spawnId: number
@@ -78,7 +109,9 @@ export interface SpawnGameDataPacket {
   components: GameComponent[]
 }
 
-// https://wiki.weewoo.net/wiki/Protocol#1_-_Data
+/**
+ * Data packet, right now only for movement. {@link https://wiki.weewoo.net/wiki/Protocol#1_-_Data}
+ */
 export interface DataGameDataPacket {
   type: GameDataType.Data
   netId: number
@@ -87,15 +120,21 @@ export interface DataGameDataPacket {
   velocity: Vector2
 }
 
-// https://wiki.weewoo.net/wiki/Protocol#6_-_Scene_Change
+/**
+ * Packet for requesting a scene change, most useful for getting a spawn point.
+ * {@link https://wiki.weewoo.net/wiki/Protocol#6_-_Scene_Change}
+ */
 export interface SceneChangeGameDataPacket {
   type: GameDataType.SceneChange
   playerClientId: number
   location: SceneChangeLocation
 }
 
-// RPC
-// https://wiki.weewoo.net/wiki/Protocol#2_-_RPC_Game_Data
+/**
+ * Remote procedure call packet bodies. These are actually extensions
+ * of the regular game data packet but with more data including an RPC flag.
+ * {@link https://wiki.weewoo.net/wiki/Protocol#2_-_RPC_Game_Data}
+ */
 export type RPCGameDataPacket =
   | SyncSettingsRPCGameDataPacket
   | CheckNameRPCGameDataPacket
@@ -105,6 +144,9 @@ export type RPCGameDataPacket =
   | UpdateGameDataRPCGameDataPacket
   | SetNameRPCGameDataPacket
 
+/**
+ * Sync game options between clients.
+ */
 export interface SyncSettingsRPCGameDataPacket {
   type: GameDataType.RPC
   flag: RPCFlag.SyncSettings
@@ -112,6 +154,9 @@ export interface SyncSettingsRPCGameDataPacket {
   gameOptions: GameOptions
 }
 
+/**
+ * Check if a name is available and set it.
+ */
 export interface CheckNameRPCGameDataPacket {
   type: GameDataType.RPC
   flag: RPCFlag.CheckName
@@ -119,6 +164,9 @@ export interface CheckNameRPCGameDataPacket {
   name: string
 }
 
+/**
+ * Set a player name. Prefer `CheckNameRPCGameDataPacket`.
+ */
 export interface SetNameRPCGameDataPacket {
   type: GameDataType.RPC
   flag: RPCFlag.SetName
@@ -126,6 +174,9 @@ export interface SetNameRPCGameDataPacket {
   name: string
 }
 
+/**
+ * Check if a color is available and set it.
+ */
 export interface CheckColorRPCGameDataPacket {
   type: GameDataType.RPC
   flag: RPCFlag.CheckColor
@@ -133,6 +184,9 @@ export interface CheckColorRPCGameDataPacket {
   color: PlayerColor
 }
 
+/**
+ * Set a player color. Prefer `CheckColorRPCGameDataPacket`.
+ */
 export interface SetColorRPCGameDataPacket {
   type: GameDataType.RPC
   flag: RPCFlag.SetColor
@@ -140,6 +194,9 @@ export interface SetColorRPCGameDataPacket {
   color: PlayerColor
 }
 
+/**
+ * Update the game data for multiple players. See `GameData` for more information.
+ */
 export interface UpdateGameDataRPCGameDataPacket {
   type: GameDataType.RPC
   flag: RPCFlag.UpdateGameData
@@ -147,6 +204,10 @@ export interface UpdateGameDataRPCGameDataPacket {
   players: GameData[]
 }
 
+/**
+ * All unsupported RPC packets are represented with this type, so until support
+ * is added you can read from the buffer in `data`.
+ */
 export interface UnparsedRPCGameDataPacket {
   type: GameDataType.RPC
   // Next line is cursed, fuck typescript
@@ -163,15 +224,17 @@ export interface UnparsedRPCGameDataPacket {
   data: ByteBuffer
 }
 
-// Game component
-// https://wiki.weewoo.net/wiki/Components
+/**
+ * Component on a Unity GameObject. {@link https://wiki.weewoo.net/wiki/Components}
+ */
 export interface GameComponent {
   netId: number
   data: ByteBuffer
 }
 
-// Game options data
-// https://wiki.weewoo.net/wiki/Game_Options_Data
+/**
+ * Game options/settings. {@link https://wiki.weewoo.net/wiki/Game_Options_Data}
+ */
 export interface GameOptions {
   maxPlayers: number
   language: Language
@@ -194,7 +257,9 @@ export interface GameOptions {
   visualTasks: boolean
 }
 
-// Game data
+/**
+ * Game data, used for representing information about players.
+ */
 export interface GameData {
   playerId: number
   playerName: string
@@ -208,7 +273,9 @@ export interface GameData {
   tasks: TaskInfo[]
 }
 
-// Task info
+/**
+ * In-game task info.
+ */
 export interface TaskInfo {
   id: number
   complete: false

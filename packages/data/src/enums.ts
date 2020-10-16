@@ -1,5 +1,6 @@
-// Base packet types.
-// https://wiki.weewoo.net/wiki/Protocol
+/**
+ * Base packet types. {@link https://wiki.weewoo.net/wiki/Protocol}
+ */
 export enum PacketType {
   Normal = 0,
   Reliable = 1,
@@ -9,8 +10,9 @@ export enum PacketType {
   Ping = 12
 }
 
-// Packet payload types.
-// https://wiki.weewoo.net/wiki/Protocol#Reliable_Packets
+/**
+ * Packet payload types. {@link https://wiki.weewoo.net/wiki/Protocol#Reliable_Packets}
+ */
 export enum PayloadType {
   CreateGame = 0,
   JoinGame,
@@ -30,8 +32,9 @@ export enum PayloadType {
   GetGameListV2 = 16
 }
 
-// Game data (and game data to) types.
-// https://wiki.weewoo.net/wiki/Protocol#5.2C_6_-_Game_Data_and_Game_Data_To
+/**
+ * Game data (and game data to) types. {@link https://wiki.weewoo.net/wiki/Protocol#5.2C_6_-_Game_Data_and_Game_Data_To}
+ */
 export enum GameDataType {
   Data = 1,
   RPC,
@@ -42,8 +45,9 @@ export enum GameDataType {
   ChangeSettings
 }
 
-// RPC instruction types.
-// https://wiki.weewoo.net/wiki/Protocol#2_-_RPC_Game_Data
+/**
+ * Remote procedure call types. https://wiki.weewoo.net/wiki/Protocol#2_-_RPC_Game_Data
+ */
 export enum RPCFlag {
   PlayAnimation = 0,
   CompleteTask,
@@ -78,6 +82,9 @@ export enum RPCFlag {
   UpdateGameData
 }
 
+/**
+ * Disconnect reasons. You can get the pretty form with `prettyDisconnectReason`.
+ */
 export enum DisconnectReason {
   None = 0,
   GameFull,
@@ -97,10 +104,16 @@ export enum DisconnectReason {
   ServerOverloaded
 }
 
+/**
+ * Options for scene change requests. OnlineGame is currently the only option.
+ */
 export enum SceneChangeLocation {
   OnlineGame = 'OnlineGame'
 }
 
+/**
+ * In-game player colors.
+ */
 export enum PlayerColor {
   Red = 0,
   Blue,
@@ -116,12 +129,18 @@ export enum PlayerColor {
   Lime
 }
 
+/**
+ * Playable maps.
+ */
 export enum AmongUsMap {
   Skeld = 0,
   MIRA,
   Polus
 }
 
+/**
+ * Supported chat and interface languages.
+ */
 export enum Language {
   Other = 0b00000000_00000000_00000000_00000001,
   Spanish = 0b00000000_00000000_00000000_00000010,
@@ -134,6 +153,9 @@ export enum Language {
   English = 0b00000000_00000000_00000001_00000000
 }
 
+/**
+ * Locations for tasks.
+ */
 export enum Location {
   Hallway = 0,
   Storage,
@@ -162,6 +184,9 @@ export enum Location {
   Greenhouse
 }
 
+/**
+ * In-game tasks that appear in the task list.
+ */
 export enum TaskType {
   SubmitScan = 0,
   PrimeShields,
