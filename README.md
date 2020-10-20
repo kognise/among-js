@@ -1,5 +1,7 @@
 ![Among JS](https://raw.githubusercontent.com/kognise/among-js/main/banner.svg)
 
+## About Among JS
+
 Among JS is a set of utilities for interacting with the Among Us protocol written in TypeScript. It's composed of several self-contained libraries which are all published to NPM:
 
 - Data: constants, enums, types, static game data, and more ([docs](https://among-js-docs.vercel.app/modules/data.html))
@@ -15,3 +17,11 @@ In it's current state not all packets and events are supported but I'm focusing 
 You can find more information about the protocol in this [freshly made wiki](https://wiki.weewoo.net/wiki/Protocol) I helped create.
 
 They're a bit of a WIP, but feel free to [read the documentation](https://among-js-docs.vercel.app/). If you have any feedback, create a GitHub issue or shoot be a DM on Discord @Kognise#6356.
+
+## Requirements
+- Node 12.x or higher
+
+## Install
+    git clone https://github.com/kognise/among-js.git
+    yarn install
+    node example.js (to run the example file)
