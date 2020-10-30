@@ -247,6 +247,21 @@ export const generatePayloads = (packets: PayloadPacket[]): ByteBuffer => {
         break
       }
 
+      case PayloadType.Redirect: {
+        const buffer = new ByteBuffer(6, true)
+
+        const ipBytes = packet.ip.split('.').map((part) => parseInt(part))
+        buffer.writeUint8(ipBytes[0])
+        buffer.writeUint8(ipBytes[1])
+        buffer.writeUint8(ipBytes[2])
+        buffer.writeUint8(ipBytes[3])
+
+        buffer.writeInt16(packet.port)
+        serializedPackets.push(buffer)
+
+        break
+      }
+
       case PayloadType.JoinGame: {
         assertJoinGameRequestPayloadPacket(packet)
 
