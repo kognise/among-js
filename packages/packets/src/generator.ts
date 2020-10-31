@@ -133,7 +133,7 @@ const generateRPCGameDataPacket = (packet: RPCGameDataPacket): ByteBuffer => {
     }
 
     default: {
-      console.warn(
+      if (process.env.AJ_DEBUG === 'yes') console.warn(
         `Generated data-only packet of type ${prettyRPCFlag(packet.flag)}`
       )
 
@@ -169,7 +169,7 @@ const genericGameDataPacketSwitch = (part: GameDataPacket): ByteBuffer => {
     }
 
     default: {
-      console.warn(
+      if (process.env.AJ_DEBUG === 'yes') console.warn(
         `Game data packet of type ${prettyGameDataType(
           part.type
         )} wasn't able to be generated`
@@ -279,7 +279,7 @@ export const generatePayloads = (packets: PayloadPacket[]): ByteBuffer => {
       }
 
       default: {
-        console.warn(
+        if (process.env.AJ_DEBUG === 'yes') console.warn(
           `Packet of type ${prettyPayloadType(
             packet.type
           )} wasn't able to be generated`

@@ -78,7 +78,7 @@ const parseRPCGameDataPacket = (
     }
 
     default: {
-      console.warn(`RPC packet of type ${prettyRPCFlag(flag)} wasn't parsed`)
+      if (process.env.AJ_DEBUG === 'yes') `RPC packet of type ${prettyRPCFlag(flag)} wasn't parsed`)
 
       const data = buffer.readBytes(dataLength - (1 + packedSize))
       return {
@@ -117,8 +117,7 @@ const parseSpawnGameDataPacket = (buffer: ByteBuffer): SpawnGameDataPacket => {
   }
 }
 
-const parseDataGameDataPacket = (buffer: ByteBuffer): DataGameDataPacket => {
-  const netId = readPacked(buffer)
+const parseDataGameDataPacket = (buffer: ByteBuffer, netId: number): DataGameDataPacket => {
   const sequence = buffer.readUint16()
   const position = Vector2.read(buffer)
   const velocity = Vector2.read(buffer)
@@ -155,7 +154,15 @@ const parseGameDataPayloadPacket = (
       }
 
       case GameDataType.Data: {
-        parts.push(parseDataGameDataPacket(buffer))
+        const beforeNetId = buffer.offset
+        const netId = readPacked(buffer)
+        const afterNetId = buffer.offset
+        if (dataLength === (afterNetId - beforeNetId) + 10) {
+          parts.push(parseDataGameDataPacket(buffer, netId))
+        } else {
+          buffer.readBytes(dataLength - (afterNetId - beforeNetId))
+        }
+
         break
       }
     }
@@ -163,7 +170,7 @@ const parseGameDataPayloadPacket = (
 
     if (endOffset - startOffset < dataLength) {
       if (endOffset - startOffset === 0) {
-        console.warn(
+        if (process.env.AJ_DEBUG === 'yes') console.warn(
           `Game data packet of type ${prettyGameDataType(
             dataType
           )} wasn't handled`
@@ -257,7 +264,7 @@ export const parsePayloads = (buffer: ByteBuffer): PayloadPacket[] => {
 
     if (endOffset - startOffset < payloadLength) {
       if (endOffset - startOffset === 0) {
-        console.warn(
+        if (process.env.AJ_DEBUG === 'yes') console.warn(
           `Payload of type ${prettyPayloadType(payloadType)} wasn't handled`
         )
       } else {

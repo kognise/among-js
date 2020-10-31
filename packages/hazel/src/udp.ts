@@ -92,7 +92,7 @@ export class HazelUDPSocket extends EventEmitter {
         }
 
         default: {
-          console.warn(`Unknown packet type: ${packetType}`)
+          if (process.env.AJ_DEBUG === 'yes') console.warn(`Unknown packet type: ${packetType}`)
         }
       }
     })
