@@ -78,7 +78,7 @@ const parseRPCGameDataPacket = (
     }
 
     default: {
-      if (process.env.AJ_DEBUG === 'yes') `RPC packet of type ${prettyRPCFlag(flag)} wasn't parsed`)
+      if (process.env.AJ_DEBUG === 'yes') console.warn(`RPC packet of type ${prettyRPCFlag(flag)} wasn't parsed`)
 
       const data = buffer.readBytes(dataLength - (1 + packedSize))
       return {
