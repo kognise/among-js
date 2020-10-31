@@ -132,6 +132,16 @@ const generateRPCGameDataPacket = (packet: RPCGameDataPacket): ByteBuffer => {
       return buffer
     }
 
+    case RPCFlag.VotingComplete: {
+      const buffer = new ByteBuffer(3, true)
+
+      buffer.writeByte(0)
+      buffer.writeByte(packet.exiled ?? 0xff)
+      buffer.writeByte(buffer.readByte() ? 1 : 0)
+
+      return buffer
+    }
+
     default: {
       if (process.env.AJ_DEBUG === 'yes') console.warn(
         `Generated data-only packet of type ${prettyRPCFlag(packet.flag)}`

@@ -77,6 +77,21 @@ const parseRPCGameDataPacket = (
       }
     }
 
+    case RPCFlag.VotingComplete: {
+      const statesLength = buffer.readByte()
+      buffer.readBytes(statesLength)
+
+      const exiled = buffer.readByte()
+      const tie = buffer.readByte() === 1
+
+      return {
+        type: GameDataType.RPC,
+        flag,
+        exiled: exiled === 0xff ? null : exiled,
+        tie
+      }
+    }
+
     default: {
       if (process.env.AJ_DEBUG === 'yes') console.warn(`RPC packet of type ${prettyRPCFlag(flag)} wasn't parsed`)
 

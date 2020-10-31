@@ -156,6 +156,7 @@ export type RPCGameDataPacket =
   | UnparsedRPCGameDataPacket
   | UpdateGameDataRPCGameDataPacket
   | SetNameRPCGameDataPacket
+  | VotingCompleteRPCGameDataPacket
 
 /**
  * Sync game options between clients.
@@ -165,6 +166,16 @@ export interface SyncSettingsRPCGameDataPacket {
   flag: RPCFlag.SyncSettings
   netId: number
   gameOptions: GameOptions
+}
+
+/**
+ * When all votes have been placed in a meeting.
+ */
+export interface VotingCompleteRPCGameDataPacket {
+  type: GameDataType.RPC,
+  flag: RPCFlag.VotingComplete,
+  exiled: number | null,
+  tie: boolean
 }
 
 /**
@@ -232,6 +243,7 @@ export interface UnparsedRPCGameDataPacket {
     | RPCFlag.SetName
     | RPCFlag.SetColor
     | RPCFlag.UpdateGameData
+    | RPCFlag.VotingComplete
   >
   netId: number
   data: ByteBuffer
