@@ -21,6 +21,7 @@ export type PayloadPacket =
   | JoinGameErrorPayloadPacket
   | JoinGameRequestPayloadPacket
   | EndGamePayloadPacket
+  | StartGamePayloadPacket
 
 /**
  * Game data packet. {@link https://wiki.weewoo.net/wiki/Protocol#5.2C_6_-_Game_Data_and_Game_Data_To}
@@ -51,6 +52,14 @@ export interface EndGamePayloadPacket {
   code: number,
   endReason: GameOverReason,
   showAd: boolean
+}
+
+/**
+ * Start game packet, for when the current game is starting.
+ */
+export interface StartGamePayloadPacket {
+  type: PayloadType.StartGame,
+  code: number
 }
 
 /**

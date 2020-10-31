@@ -289,6 +289,16 @@ export const parsePayloads = (buffer: ByteBuffer): PayloadPacket[] => {
 
         break
       }
+
+      case PayloadType.StartGame: {
+        const code = buffer.readInt32()
+        packets.push({
+          type: payloadType,
+          code
+        })
+
+        break
+      }
     }
     const endOffset = buffer.offset
 
