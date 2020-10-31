@@ -248,16 +248,19 @@ export const generatePayloads = (packets: PayloadPacket[]): ByteBuffer => {
       }
 
       case PayloadType.Redirect: {
-        const buffer = new ByteBuffer(6, true)
+        const bb = new ByteBuffer(9, true)
+
+        bb.writeInt16(6)
+        bb.writeByte(packet.type)
 
         const ipBytes = packet.ip.split('.').map((part) => parseInt(part))
-        buffer.writeUint8(ipBytes[0])
-        buffer.writeUint8(ipBytes[1])
-        buffer.writeUint8(ipBytes[2])
-        buffer.writeUint8(ipBytes[3])
+        bb.writeUint8(ipBytes[0])
+        bb.writeUint8(ipBytes[1])
+        bb.writeUint8(ipBytes[2])
+        bb.writeUint8(ipBytes[3])
 
-        buffer.writeInt16(packet.port)
-        serializedPackets.push(buffer)
+        bb.writeInt16(packet.port)
+        serializedPackets.push(bb)
 
         break
       }
