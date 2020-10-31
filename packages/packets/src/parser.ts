@@ -81,7 +81,7 @@ const parseRPCGameDataPacket = (
       const statesLength = buffer.readByte()
       buffer.readBytes(statesLength)
 
-      const exiled = buffer.readByte()
+      const exiled = buffer.readUint8()
       const tie = buffer.readByte() === 1
 
       return {

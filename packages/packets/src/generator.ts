@@ -136,7 +136,7 @@ const generateRPCGameDataPacket = (packet: RPCGameDataPacket): ByteBuffer => {
       const buffer = new ByteBuffer(3, true)
 
       buffer.writeByte(0)
-      buffer.writeByte(packet.exiled ?? 0xff)
+      buffer.writeUint8(packet.exiled ?? 0xff)
       buffer.writeByte(buffer.readByte() ? 1 : 0)
 
       return buffer
