@@ -142,6 +142,21 @@ const generateRPCGameDataPacket = (packet: RPCGameDataPacket): ByteBuffer => {
       return buffer
     }
 
+    case RPCFlag.SetInfected: {
+      const packedInfectedLength = pack(packet.infected.length)
+      const buffer = new ByteBuffer(packedInfectedLength.length + packet.infected.length, true)
+      buffer.writeBytes(packedInfectedLength)
+      for (const id of packet.infected) buffer.writeByte(id)
+      return buffer
+    }
+
+    case RPCFlag.MurderPlayer: {
+      const packedId = pack(packet.id)
+      const buffer = new ByteBuffer(packedId.length, true)
+      buffer.writeBytes(packedId)
+      return buffer
+    }
+
     default: {
       if (process.env.AJ_DEBUG === 'yes') console.warn(
         `Generated data-only packet of type ${prettyRPCFlag(packet.flag)}`

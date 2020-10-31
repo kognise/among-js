@@ -166,6 +166,8 @@ export type RPCGameDataPacket =
   | UpdateGameDataRPCGameDataPacket
   | SetNameRPCGameDataPacket
   | VotingCompleteRPCGameDataPacket
+  | SetInfectedRPCGameDataPacket
+  | MurderPlayerRPCGameDataPacket
 
 /**
  * Sync game options between clients.
@@ -175,6 +177,24 @@ export interface SyncSettingsRPCGameDataPacket {
   flag: RPCFlag.SyncSettings
   netId: number
   gameOptions: GameOptions
+}
+
+/**
+ * Sets the list of impostor player ids.
+ */
+export interface SetInfectedRPCGameDataPacket {
+  type: GameDataType.RPC,
+  flag: RPCFlag.SetInfected,
+  infected: number[]
+}
+
+/**
+ * Called when a player is killed by an impostor.
+ */
+export interface MurderPlayerRPCGameDataPacket {
+  type: GameDataType.RPC,
+  flag: RPCFlag.MurderPlayer,
+  id: number
 }
 
 /**
@@ -253,6 +273,8 @@ export interface UnparsedRPCGameDataPacket {
     | RPCFlag.SetColor
     | RPCFlag.UpdateGameData
     | RPCFlag.VotingComplete
+    | RPCFlag.SetInfected
+    | RPCFlag.MurderPlayer
   >
   netId: number
   data: ByteBuffer

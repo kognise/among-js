@@ -92,6 +92,28 @@ const parseRPCGameDataPacket = (
       }
     }
 
+    case RPCFlag.MurderPlayer: {
+      return {
+        type: GameDataType.RPC,
+        flag,
+        id: readPacked(buffer)
+      }
+    }
+
+    case RPCFlag.SetInfected: {
+      const infectedLength = readPacked(buffer)
+      const infected = []
+      for (let i = 0; i < infectedLength; i++) {
+        infected.push(buffer.readByte())
+      }
+      
+      return {
+        type: GameDataType.RPC,
+        flag,
+        infected
+      }
+    }
+
     default: {
       if (process.env.AJ_DEBUG === 'yes') console.warn(`RPC packet of type ${prettyRPCFlag(flag)} wasn't parsed`)
 
