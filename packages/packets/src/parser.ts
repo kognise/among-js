@@ -168,10 +168,10 @@ const parseDataGameDataPacket = (buffer: ByteBuffer, netId: number): DataGameDat
   }
 }
 
-const parseGameDataPayloadPacket = (
-  buffer: ByteBuffer
+const genericParseGameDataPayloadPacket = (
+  buffer: ByteBuffer,
+  codeNumber: number
 ): GameDataPayloadPacket => {
-  const codeNumber = buffer.readInt32()
   const parts: GameDataPacket[] = []
 
   while (buffer.offset < buffer.capacity()) {
@@ -253,7 +253,19 @@ export const parsePayloads = (buffer: ByteBuffer): PayloadPacket[] => {
     const startOffset = buffer.offset
     switch (payloadType) {
       case PayloadType.GameData: {
-        packets.push(parseGameDataPayloadPacket(buffer))
+        const codeNumber = buffer.readInt32()
+        packets.push(genericParseGameDataPayloadPacket(buffer, codeNumber))
+        break
+      }
+
+      case PayloadType.GameDataTo: {
+        const codeNumber = buffer.readInt32()
+        const recipient = readPacked(buffer)
+        packets.push({
+          ...genericParseGameDataPayloadPacket(buffer, codeNumber),
+          type: PayloadType.GameDataTo,
+          recipient
+        })
         break
       }
 
