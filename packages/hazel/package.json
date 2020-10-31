@@ -1,6 +1,6 @@
 {
   "name": "@among-js/hazel",
-  "version": "0.1.4",
+  "version": "0.1.6",
   "description": "Implementation of the Hazel protocol that powers Among Us",
   "author": "Felix Mattick <felix.mattick@gmail.com>",
   "scripts": {
