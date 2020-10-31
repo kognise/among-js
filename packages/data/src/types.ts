@@ -6,7 +6,8 @@ import {
   RPCFlag,
   Language,
   AmongUsMap,
-  PlayerColor
+  PlayerColor,
+  GameOverReason
 } from './enums'
 
 /**
@@ -19,6 +20,7 @@ export type PayloadPacket =
   | RedirectPayloadPacket
   | JoinGameErrorPayloadPacket
   | JoinGameRequestPayloadPacket
+  | EndGamePayloadPacket
 
 /**
  * Game data packet. {@link https://wiki.weewoo.net/wiki/Protocol#5.2C_6_-_Game_Data_and_Game_Data_To}
@@ -41,7 +43,18 @@ export interface GameDataToPayloadPacket {
 }
 
 /**
- * Joined game packet, send after joining is a success.
+ * End game packet, for when the current game is over.
+ * This removes the client from the room so it'll have to rejoin.
+ */
+export interface EndGamePayloadPacket {
+  type: PayloadType.EndGame,
+  code: number,
+  endReason: GameOverReason,
+  showAd: boolean
+}
+
+/**
+ * Joined game packet, sent after joining is a success.
  */
 export interface JoinedGamePayloadPacket {
   type: PayloadType.JoinedGame

@@ -215,3 +215,16 @@ export enum TaskType {
   MeasureWeather,
   EnterIdCode
 }
+
+/**
+ * Reasons for games ending.
+ */
+export enum GameOverReason {
+  CrewmatesByVote = 0,	
+  CrewmatesByTask,
+  ImpostorByVote,
+  ImpostorByKill,
+  ImpostorBySabotage,
+  ImpostorDisconnect,
+  CrewmatesDisconnect
+}
