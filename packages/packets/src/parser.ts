@@ -86,7 +86,9 @@ const parseRPCGameDataPacket = (
         const byte = buffer.readUint8()
         states.push({
           playerId,
-          votedFor: (byte & 15) - 1,
+          votedFor: (byte & 64) > 0 // Did vote
+            ? (byte & 15) - 1
+            : null,
           isDead: (byte & 128) > 0,
           didReport: (byte & 32) > 0
         })
