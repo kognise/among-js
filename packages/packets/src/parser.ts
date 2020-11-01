@@ -13,7 +13,8 @@ import {
   prettyDisconnectReason,
   prettyPayloadType,
   prettyRPCFlag,
-  GameData
+  GameData,
+  VoteState
 } from '@among-js/data'
 import { readPacked, Vector2 } from '@among-js/util'
 import { readGameData } from './game-data'
@@ -78,14 +79,25 @@ const parseRPCGameDataPacket = (
     }
 
     case RPCFlag.VotingComplete: {
+      const states: VoteState[] = []
       const statesLength = buffer.readByte()
-      buffer.readBytes(statesLength)
+
+      for (let playerId = 0; playerId < statesLength; playerId++) {
+        const byte = buffer.readUint8()
+        states.push({
+          playerId,
+          votedFor: (byte & 15) - 1,
+          isDead: (byte & 128) > 0,
+          didReport: (byte & 32) > 0
+        })
+      }
 
       const exiled = buffer.readUint8()
       const tie = buffer.readByte() === 1
 
       return {
         type: GameDataType.RPC,
+        states,
         flag,
         exiled: exiled === 0xff ? null : exiled,
         tie

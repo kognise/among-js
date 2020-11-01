@@ -203,6 +203,7 @@ export interface MurderPlayerRPCGameDataPacket {
 export interface VotingCompleteRPCGameDataPacket {
   type: GameDataType.RPC,
   flag: RPCFlag.VotingComplete,
+  states: VoteState[],
   exiled: number | null,
   tie: boolean
 }
@@ -335,4 +336,14 @@ export interface GameData {
 export interface TaskInfo {
   type: number
   complete: boolean
+}
+
+/**
+ * State of a player's vote board during an emergency meeting or body report.
+ */
+export interface VoteState {
+  playerId: number,
+  votedFor: number | null,
+  didReport: boolean,
+  isDead: boolean
 }
