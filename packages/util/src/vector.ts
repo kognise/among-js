@@ -14,7 +14,7 @@ export class Vector2 {
 
   /**
    * Read a Vector2 from a buffer and correctly linearly interpolate the values.
-   * 
+   *
    * @param bb Buffer to read from
    */
   static read(bb: ByteBuffer): Vector2 {
@@ -25,7 +25,7 @@ export class Vector2 {
 
   /**
    * Write the Vector2 to a buffer and correctly linearly interpolate the values.
-   * 
+   *
    * @param bb Buffer to write to
    */
   write(bb: ByteBuffer) {

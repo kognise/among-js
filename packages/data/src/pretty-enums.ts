@@ -3,11 +3,18 @@
  * Functions to convert enums into human-readable names for debugging.
  */
 
-import { PayloadType, DisconnectReason, RPCFlag, GameDataType, PlayerColor, TaskType } from './enums'
+import {
+  PayloadType,
+  DisconnectReason,
+  RPCFlag,
+  GameDataType,
+  PlayerColor,
+  TaskType
+} from './enums'
 
 /**
  * Convert a payload type to a human-readable string.
- * 
+ *
  * @param type Payload type
  */
 export const prettyPayloadType = (type: PayloadType) => {
@@ -52,7 +59,7 @@ export const prettyPayloadType = (type: PayloadType) => {
 
 /**
  * Convert a disconnect reason to a human-readable string as found in the game.
- * 
+ *
  * @param reason Disconnect reason
  */
 export const prettyDisconnectReason = (reason: DisconnectReason) => {
@@ -97,7 +104,7 @@ export const prettyDisconnectReason = (reason: DisconnectReason) => {
 
 /**
  * Convert an RPC flag to a human-readable string
- * 
+ *
  * @param type RPC flag
  */
 export const prettyRPCFlag = (type: RPCFlag) => {
@@ -169,7 +176,7 @@ export const prettyRPCFlag = (type: RPCFlag) => {
 
 /**
  * Convert a game data type to a human-readable string.
- * 
+ *
  * @param type Game data type
  */
 export const prettyGameDataType = (type: GameDataType) => {
@@ -193,58 +200,96 @@ export const prettyGameDataType = (type: GameDataType) => {
 
 /**
  * Convert a player color to a human-readable string.
- * 
+ *
  * @param color Player color
  */
 export const prettyPlayerColor = (color: PlayerColor) => {
   switch (color) {
-    case PlayerColor.Red: return 'red'
-    case PlayerColor.Blue: return 'blue'
-    case PlayerColor.DarkGreen: return 'dark green'
-    case PlayerColor.Pink: return 'pink'
-    case PlayerColor.Orange: return 'orange'
-    case PlayerColor.Yellow: return 'yellow'
-    case PlayerColor.Black: return 'black'
-    case PlayerColor.White: return 'white'
-    case PlayerColor.Purple: return 'purple'
-    case PlayerColor.Brown: return 'brown'
-    case PlayerColor.Cyan: return 'cyan'
-    case PlayerColor.Lime: return 'lime'
+    case PlayerColor.Red:
+      return 'red'
+    case PlayerColor.Blue:
+      return 'blue'
+    case PlayerColor.DarkGreen:
+      return 'dark green'
+    case PlayerColor.Pink:
+      return 'pink'
+    case PlayerColor.Orange:
+      return 'orange'
+    case PlayerColor.Yellow:
+      return 'yellow'
+    case PlayerColor.Black:
+      return 'black'
+    case PlayerColor.White:
+      return 'white'
+    case PlayerColor.Purple:
+      return 'purple'
+    case PlayerColor.Brown:
+      return 'brown'
+    case PlayerColor.Cyan:
+      return 'cyan'
+    case PlayerColor.Lime:
+      return 'lime'
   }
 }
 
 /**
  * Convert a task type to a human-readable string as seen in the task list in the game.
- * 
+ *
  * @param type Task type
  */
 export const prettyTaskType = (type: TaskType) => {
   switch (type) {
-    case TaskType.SubmitScan: return 'Submit Scan'
-    case TaskType.PrimeShields: return 'Prime Shields'
-    case TaskType.FuelEngines: return 'Fuel Engines'
-    case TaskType.ChartCourse: return 'Chart Course'
-    case TaskType.StartReactor: return 'Start Reactor'
-    case TaskType.SwipeCard: return 'Swipe Card'
-    case TaskType.ClearAsteroids: return 'Clear Asteroids'
-    case TaskType.UploadData: return 'Upload Data'
-    case TaskType.InspectSample: return 'Inspect Sample'
-    case TaskType.EmptyChute: return 'Empty Chute'
-    case TaskType.EmptyGarbage: return 'Empty Garbage'
-    case TaskType.AlignEngineOutput: return 'Align Engine Output'
-    case TaskType.FixWiring: return 'Fix Wiring'
-    case TaskType.CalibrateDistributor: return 'Calibrate Distributor'
-    case TaskType.DivertPower: return 'Divert Power'
-    case TaskType.UnlockManifolds: return 'Unlock Manifolds'
-    case TaskType.ResetReactor: return 'Reset Reactor'
-    case TaskType.FixLights: return 'Fix Lights'
-    case TaskType.CleanO2Filter: return 'Clean O2 Filter'
-    case TaskType.FixComms: return 'Fix Comms'
-    case TaskType.RestoreOxygen: return 'Restore Oxygen'
-    case TaskType.StabilizeSteering: return 'Stabilize Steering'
-    case TaskType.AssembleArtifact: return 'Assemble Artifact'
-    case TaskType.SortSamples: return 'Sort Samples'
-    case TaskType.MeasureWeather: return 'Measure Weather'
-    case TaskType.EnterIdCode: return 'Enter Id Code'
+    case TaskType.SubmitScan:
+      return 'Submit Scan'
+    case TaskType.PrimeShields:
+      return 'Prime Shields'
+    case TaskType.FuelEngines:
+      return 'Fuel Engines'
+    case TaskType.ChartCourse:
+      return 'Chart Course'
+    case TaskType.StartReactor:
+      return 'Start Reactor'
+    case TaskType.SwipeCard:
+      return 'Swipe Card'
+    case TaskType.ClearAsteroids:
+      return 'Clear Asteroids'
+    case TaskType.UploadData:
+      return 'Upload Data'
+    case TaskType.InspectSample:
+      return 'Inspect Sample'
+    case TaskType.EmptyChute:
+      return 'Empty Chute'
+    case TaskType.EmptyGarbage:
+      return 'Empty Garbage'
+    case TaskType.AlignEngineOutput:
+      return 'Align Engine Output'
+    case TaskType.FixWiring:
+      return 'Fix Wiring'
+    case TaskType.CalibrateDistributor:
+      return 'Calibrate Distributor'
+    case TaskType.DivertPower:
+      return 'Divert Power'
+    case TaskType.UnlockManifolds:
+      return 'Unlock Manifolds'
+    case TaskType.ResetReactor:
+      return 'Reset Reactor'
+    case TaskType.FixLights:
+      return 'Fix Lights'
+    case TaskType.CleanO2Filter:
+      return 'Clean O2 Filter'
+    case TaskType.FixComms:
+      return 'Fix Comms'
+    case TaskType.RestoreOxygen:
+      return 'Restore Oxygen'
+    case TaskType.StabilizeSteering:
+      return 'Stabilize Steering'
+    case TaskType.AssembleArtifact:
+      return 'Assemble Artifact'
+    case TaskType.SortSamples:
+      return 'Sort Samples'
+    case TaskType.MeasureWeather:
+      return 'Measure Weather'
+    case TaskType.EnterIdCode:
+      return 'Enter Id Code'
   }
 }

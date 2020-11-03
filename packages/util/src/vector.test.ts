@@ -9,7 +9,7 @@ test('can create vector2', () => {
 
 test('can read vector2', () => {
   const buffer = new ByteBuffer(4)
-  buffer.append(Buffer.from([ 0xbf, 0xff, 0x20, 0x00 ]))
+  buffer.append(Buffer.from([0xbf, 0xff, 0x20, 0x00]))
   buffer.clear()
 
   const vector2 = Vector2.read(buffer)

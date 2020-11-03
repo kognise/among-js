@@ -144,7 +144,10 @@ const generateRPCGameDataPacket = (packet: RPCGameDataPacket): ByteBuffer => {
 
     case RPCFlag.SetInfected: {
       const packedInfectedLength = pack(packet.infected.length)
-      const buffer = new ByteBuffer(packedInfectedLength.length + packet.infected.length, true)
+      const buffer = new ByteBuffer(
+        packedInfectedLength.length + packet.infected.length,
+        true
+      )
       buffer.writeBytes(packedInfectedLength)
       for (const id of packet.infected) buffer.writeByte(id)
       return buffer
@@ -158,9 +161,10 @@ const generateRPCGameDataPacket = (packet: RPCGameDataPacket): ByteBuffer => {
     }
 
     default: {
-      if (process.env.AJ_DEBUG === 'yes') console.warn(
-        `Generated data-only packet of type ${prettyRPCFlag(packet.flag)}`
-      )
+      if (process.env.AJ_DEBUG === 'yes')
+        console.warn(
+          `Generated data-only packet of type ${prettyRPCFlag(packet.flag)}`
+        )
 
       const packedNetId = pack(packet.netId)
       const buffer = new ByteBuffer(
@@ -194,11 +198,12 @@ const genericGameDataPacketSwitch = (part: GameDataPacket): ByteBuffer => {
     }
 
     default: {
-      if (process.env.AJ_DEBUG === 'yes') console.warn(
-        `Game data packet of type ${prettyGameDataType(
-          part.type
-        )} wasn't able to be generated`
-      )
+      if (process.env.AJ_DEBUG === 'yes')
+        console.warn(
+          `Game data packet of type ${prettyGameDataType(
+            part.type
+          )} wasn't able to be generated`
+        )
       return new ByteBuffer(0)
     }
   }
@@ -254,7 +259,7 @@ const generateGameDataToPayloadPacket = (
  * Take a list of typed object packets and serialize them into a byte
  * buffer to send over the network. This is the main function of this
  * library, see the `@among-us/data` docs for all packet types.
- * 
+ *
  * @param packets Packets to serialize
  */
 export const generatePayloads = (packets: PayloadPacket[]): ByteBuffer => {
@@ -278,7 +283,7 @@ export const generatePayloads = (packets: PayloadPacket[]): ByteBuffer => {
         bb.writeInt16(6)
         bb.writeByte(packet.type)
 
-        const ipBytes = packet.ip.split('.').map((part) => parseInt(part))
+        const ipBytes = packet.ip.split('.').map(part => parseInt(part))
         bb.writeUint8(ipBytes[0])
         bb.writeUint8(ipBytes[1])
         bb.writeUint8(ipBytes[2])
@@ -304,11 +309,12 @@ export const generatePayloads = (packets: PayloadPacket[]): ByteBuffer => {
       }
 
       default: {
-        if (process.env.AJ_DEBUG === 'yes') console.warn(
-          `Packet of type ${prettyPayloadType(
-            packet.type
-          )} wasn't able to be generated`
-        )
+        if (process.env.AJ_DEBUG === 'yes')
+          console.warn(
+            `Packet of type ${prettyPayloadType(
+              packet.type
+            )} wasn't able to be generated`
+          )
       }
     }
   }

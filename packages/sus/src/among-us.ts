@@ -47,16 +47,16 @@ export declare interface AmongUsSocket {
 
 /**
  * Simple and clean wrapper for making Among Us clients and bots.
- * 
+ *
  * If you're reading this through TypeDoc, I **highly** recommend unchecking "Inherited"
  * in the top right corner. It'll make it so you only have to see the methods and properties
  * that are pertinent to Among JS.
- * 
+ *
  * @example
  * ```typescript
  * import { AmongUsSocket } from '@among-js/sus'
  * import { PlayerColor, matchmakingServers } from '@among-js/data'
- * 
+ *
  * const socket = new AmongUsSocket('testing')
  * await socket.connect(22023, matchmakingServers.NA[1])
  * await socket.joinGame('ABCDEF')
@@ -91,11 +91,11 @@ export class AmongUsSocket extends EventEmitter {
 
   /**
    * Connect to a port and ip address. This also performs a handshake to properly initialize the version and username.
-   * 
+   *
    * If you don't know what server to connect to, get an ip from the `matchmakingServers` export from `@among-js/data`
    * and use 22023 as a port. You may also want to consider setting up a local {@link https://github.com/AeonLucid/Impostor | Impostor}
    * server for testing without putting load on the official servers.
-   * 
+   *
    * @param port Port
    * @param ip Ip address
    */
@@ -116,7 +116,7 @@ export class AmongUsSocket extends EventEmitter {
    *   - Joined, meaning no further action must be taken
    *   - Redirect, meaning the current socket should be scrapped and the join should be retried on the given ip and port
    *   - Error, meaning it should throw an error
-   * 
+   *
    * @param code Game code to join, as a string
    */
   private async tryJoin(code: string) {
@@ -176,7 +176,7 @@ export class AmongUsSocket extends EventEmitter {
    * Join an Among Us game, and handle join errors as well as redirects.
    * **This only connects! To get an avatar, receive events, and move around
    * you must use the `spawn` function.`
-   * 
+   *
    * @param code Game code to join, as a string
    */
   async joinGame(code: string) {
@@ -202,7 +202,7 @@ export class AmongUsSocket extends EventEmitter {
 
   /**
    * Spawn the player with an avatar and username, and begin emitting events.
-   * 
+   *
    * @param color The color to spawn with, from `@among-js/data`
    */
   async spawn(color: PlayerColor) {
@@ -288,10 +288,10 @@ export class AmongUsSocket extends EventEmitter {
 
   /**
    * Move to a position with a velocity.
-   * 
+   *
    * @param position Position to move to
    * @param velocity Character controller velocity
-   * 
+   *
    * @beta
    */
   async move(position: Vector2, velocity: Vector2) {

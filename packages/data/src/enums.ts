@@ -220,11 +220,20 @@ export enum TaskType {
  * Reasons for games ending.
  */
 export enum GameOverReason {
-  CrewmatesByVote = 0,	
+  CrewmatesByVote = 0,
   CrewmatesByTask,
   ImpostorByVote,
   ImpostorByKill,
   ImpostorBySabotage,
   ImpostorDisconnect,
   CrewmatesDisconnect
+}
+
+/**
+ * Task bar updates game options setting.
+ */
+export enum TaskBarUpdates {
+  Always = 0,
+  Meetings,
+  Never
 }

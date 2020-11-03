@@ -2,12 +2,37 @@
 
 const v2Characters = 'QWXRTYLPESDFGHUJKZOCVBINMA'
 const v2LookupTable = [
-  25, 21, 19, 10, 8, 11, 12, 13, 22, 15, 16, 6, 24, 23, 18, 7, 0, 3, 9, 4, 14, 20, 1, 2, 5, 17
+  25,
+  21,
+  19,
+  10,
+  8,
+  11,
+  12,
+  13,
+  22,
+  15,
+  16,
+  6,
+  24,
+  23,
+  18,
+  7,
+  0,
+  3,
+  9,
+  4,
+  14,
+  20,
+  1,
+  2,
+  5,
+  17
 ]
 
 /**
  * Converts a V2 game code into its number form.
- * 
+ *
  * @param code Game code as a string
  */
 export const v2CodeToNumber = (code: string) => {
@@ -27,7 +52,7 @@ export const v2CodeToNumber = (code: string) => {
 
 /**
  * Converts a V2 game code as a number into a human-readable string
- * 
+ *
  * @param code Game code as a number
  */
 export const v2NumberToCode = (code: number) => {
@@ -38,8 +63,8 @@ export const v2NumberToCode = (code: number) => {
     v2Characters[a % 26],
     v2Characters[Math.trunc(a / 26)],
     v2Characters[b % 26],
-    v2Characters[Math.trunc(b / 26 % 26)],
-    v2Characters[Math.trunc(b / (26 * 26) % 26)],
-    v2Characters[Math.trunc(b / (26 * 26 * 26) % 26)]
+    v2Characters[Math.trunc((b / 26) % 26)],
+    v2Characters[Math.trunc((b / (26 * 26)) % 26)],
+    v2Characters[Math.trunc((b / (26 * 26 * 26)) % 26)]
   ].join('')
 }

@@ -9,32 +9,32 @@ export declare interface HazelUDPSocket {
 
 /**
  * Implementation of the Hazel base protocol with a raw UDP transport.
- * 
+ *
  * This handles things such as different packet types, as well as sending acknowledgements and pings.
- * 
+ *
  * No parsing is done to the inner packets to maintain separation of concerns. You should be able to
  * use this with **any** Hazel-based backed without trouble.
- * 
+ *
  * The main methods you'll be using are:
  * - `send` and `sendReliable` for sending messages
  * - `connect` and `disconnect` for, well, connecting and disconnecting
  * - `on` to listen for the message event
- * 
+ *
  * In 99% of use cases you'll also want `@among-js/data` for packet type enums and more,
  * as well as `bytebuffer` for a nice buffer library.
- * 
+ *
  * @example
  * ```typescript
  * import { HazelUDPSocket } from '@among-js/hazel'
  * import { PacketType } from '@among-js/data'
  * import ByteBuffer from 'bytebuffer'
- * 
+ *
  * const socket = new HazelUDPSocket('udp4')
- * 
+ *
  * socket.on('message', (buffer) => {
  *   console.log(buffer.toDebug(true))
  * })
- * 
+ *
  * // Send an empty hello packet
  * await socket.sendReliable(PacketType.Hello, new ByteBuffer(0))
  * ```
@@ -92,7 +92,8 @@ export class HazelUDPSocket extends EventEmitter {
         }
 
         default: {
-          if (process.env.AJ_DEBUG === 'yes') console.warn(`Unknown packet type: ${packetType}`)
+          if (process.env.AJ_DEBUG === 'yes')
+            console.warn(`Unknown packet type: ${packetType}`)
         }
       }
     })
@@ -102,7 +103,7 @@ export class HazelUDPSocket extends EventEmitter {
    * Reliable packets require an acknowledgement packet in response
    * or the server will throw a tantrum. This will send that response.
    * {@link https://wiki.weewoo.net/wiki/Protocol#Acknowledgement}
-   * 
+   *
    * @param buffer Packet buffer
    */
   private handleReliableResponse(buffer: Buffer) {
@@ -117,7 +118,7 @@ export class HazelUDPSocket extends EventEmitter {
   /**
    * Generic handler for packets with payloads, for both reliable
    * and normal packets. Calls the appropriate event listeners.
-   * 
+   *
    * @param buffer Packet buffer
    * @param offset Position the packet begins at
    */
@@ -130,7 +131,7 @@ export class HazelUDPSocket extends EventEmitter {
 
   /**
    * Hacky helper to wait for an acknowledgement before continuing.
-   * 
+   *
    * @param reliableId Nonce of the packet sent
    */
   private async waitForAcknowledgement(reliableId: number) {
@@ -152,7 +153,7 @@ export class HazelUDPSocket extends EventEmitter {
 
   /**
    * Bind the socket to an ip and port.
-   * 
+   *
    * @param port Port
    * @param ip IPV4 address
    */
@@ -166,7 +167,7 @@ export class HazelUDPSocket extends EventEmitter {
    * Helper for sending reliable packer. Automatically handles waiting for
    * acknowledgements and incrementing the reliable id.
    * {@link https://wiki.weewoo.net/wiki/Protocol#Reliable_Packets}
-   * 
+   *
    * @param sendOption Type of packet to send
    * @param data Data as a byte buffer
    */
@@ -184,7 +185,7 @@ export class HazelUDPSocket extends EventEmitter {
 
   /**
    * Wrapper for asyncronously sending raw packets.
-   * 
+   *
    * @param bb Data as a byte buffer
    */
   send(bb: ByteBuffer) {
@@ -203,7 +204,7 @@ export class HazelUDPSocket extends EventEmitter {
    * Disconnect cleanly by sending a disconnect packet and
    * waiting for a response. Otherwise the next time we try
    * to connect the server won't respond to the hello.
-   * 
+   *
    * {@link https://wiki.weewoo.net/wiki/Protocol#Disconnect}
    */
   async disconnect() {

@@ -86,16 +86,17 @@ const parseRPCGameDataPacket = (
         const byte = buffer.readUint8()
         states.push({
           playerId,
-          votedFor: (byte & 64) > 0 // Did vote
-            ? (byte & 15) - 1
-            : null,
+          votedFor:
+            (byte & 64) > 0 // Did vote
+              ? (byte & 15) - 1
+              : null,
           isDead: (byte & 128) > 0,
           didReport: (byte & 32) > 0
         })
       }
 
       const exiled = buffer.readUint8()
-      const tie = buffer.readByte() === 1
+      const tie = buffer.readByte() > 0
 
       return {
         type: GameDataType.RPC,
@@ -120,7 +121,7 @@ const parseRPCGameDataPacket = (
       for (let i = 0; i < infectedLength; i++) {
         infected.push(buffer.readByte())
       }
-      
+
       return {
         type: GameDataType.RPC,
         flag,
@@ -129,7 +130,8 @@ const parseRPCGameDataPacket = (
     }
 
     default: {
-      if (process.env.AJ_DEBUG === 'yes') console.warn(`RPC packet of type ${prettyRPCFlag(flag)} wasn't parsed`)
+      if (process.env.AJ_DEBUG === 'yes')
+        console.warn(`RPC packet of type ${prettyRPCFlag(flag)} wasn't parsed`)
 
       const data = buffer.readBytes(dataLength - (1 + packedSize))
       return {
@@ -168,7 +170,10 @@ const parseSpawnGameDataPacket = (buffer: ByteBuffer): SpawnGameDataPacket => {
   }
 }
 
-const parseDataGameDataPacket = (buffer: ByteBuffer, netId: number): DataGameDataPacket => {
+const parseDataGameDataPacket = (
+  buffer: ByteBuffer,
+  netId: number
+): DataGameDataPacket => {
   const sequence = buffer.readUint16()
   const position = Vector2.read(buffer)
   const velocity = Vector2.read(buffer)
@@ -208,7 +213,7 @@ const genericParseGameDataPayloadPacket = (
         const beforeNetId = buffer.offset
         const netId = readPacked(buffer)
         const afterNetId = buffer.offset
-        if (dataLength === (afterNetId - beforeNetId) + 10) {
+        if (dataLength === afterNetId - beforeNetId + 10) {
           parts.push(parseDataGameDataPacket(buffer, netId))
         } else {
           buffer.readBytes(dataLength - (afterNetId - beforeNetId))
@@ -221,11 +226,12 @@ const genericParseGameDataPayloadPacket = (
 
     if (endOffset - startOffset < dataLength) {
       if (endOffset - startOffset === 0) {
-        if (process.env.AJ_DEBUG === 'yes') console.warn(
-          `Game data packet of type ${prettyGameDataType(
-            dataType
-          )} wasn't handled`
-        )
+        if (process.env.AJ_DEBUG === 'yes')
+          console.warn(
+            `Game data packet of type ${prettyGameDataType(
+              dataType
+            )} wasn't handled`
+          )
       } else {
         console.warn(
           `Parsing game data packet of type ${prettyGameDataType(
@@ -254,7 +260,7 @@ const genericParseGameDataPayloadPacket = (
 /**
  * Take a buffer of bytes and parse it into a rich object structure for
  * consuming for code. See the `@among-us/data` docs for all packet types.
- * 
+ *
  * @param packets Packets to serialize
  */
 export const parsePayloads = (buffer: ByteBuffer): PayloadPacket[] => {
@@ -326,7 +332,7 @@ export const parsePayloads = (buffer: ByteBuffer): PayloadPacket[] => {
       case PayloadType.EndGame: {
         const code = buffer.readInt32()
         const endReason = buffer.readByte()
-        const showAd = buffer.readByte() === 1
+        const showAd = buffer.readByte() > 0
 
         packets.push({
           type: payloadType,
@@ -352,9 +358,10 @@ export const parsePayloads = (buffer: ByteBuffer): PayloadPacket[] => {
 
     if (endOffset - startOffset < payloadLength) {
       if (endOffset - startOffset === 0) {
-        if (process.env.AJ_DEBUG === 'yes') console.warn(
-          `Payload of type ${prettyPayloadType(payloadType)} wasn't handled`
-        )
+        if (process.env.AJ_DEBUG === 'yes')
+          console.warn(
+            `Payload of type ${prettyPayloadType(payloadType)} wasn't handled`
+          )
       } else {
         console.warn(
           `Parsing payload of type ${prettyPayloadType(

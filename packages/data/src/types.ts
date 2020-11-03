@@ -7,7 +7,8 @@ import {
   Language,
   AmongUsMap,
   PlayerColor,
-  GameOverReason
+  GameOverReason,
+  TaskBarUpdates
 } from './enums'
 
 /**
@@ -48,9 +49,9 @@ export interface GameDataToPayloadPacket {
  * This removes the client from the room so it'll have to rejoin.
  */
 export interface EndGamePayloadPacket {
-  type: PayloadType.EndGame,
-  code: number,
-  endReason: GameOverReason,
+  type: PayloadType.EndGame
+  code: number
+  endReason: GameOverReason
   showAd: boolean
 }
 
@@ -58,7 +59,7 @@ export interface EndGamePayloadPacket {
  * Start game packet, for when the current game is starting.
  */
 export interface StartGamePayloadPacket {
-  type: PayloadType.StartGame,
+  type: PayloadType.StartGame
   code: number
 }
 
@@ -74,11 +75,11 @@ export interface JoinedGamePayloadPacket {
 
 /**
  * Represents an error while joining a game, sent from the server to the client.
- * 
+ *
  * Be wary that `JoinGameRequestPayloadPacket` has the same payload type but a
  * different format. You can use `assertJoinGameErrorPayloadPacket` to make sure
  * that a packet is an error and not a request.
- * 
+ *
  * {@link https://wiki.weewoo.net/wiki/Protocol#Server_To_Client}
  */
 export interface JoinGameErrorPayloadPacket {
@@ -88,11 +89,11 @@ export interface JoinGameErrorPayloadPacket {
 
 /**
  * A request to join a game, sent from the client to the server.
- * 
+ *
  * Be wary that `JoinGameErrorPayloadPacket` has the same payload type but a
  * different format. You can use `assertJoinGameRequestPayloadPacket` to make sure
  * that a packet is a request and not an error.
- * 
+ *
  * {@link https://wiki.weewoo.net/wiki/Protocol#Client_To_Server}
  */
 export interface JoinGameRequestPayloadPacket {
@@ -183,8 +184,8 @@ export interface SyncSettingsRPCGameDataPacket {
  * Sets the list of impostor player ids.
  */
 export interface SetInfectedRPCGameDataPacket {
-  type: GameDataType.RPC,
-  flag: RPCFlag.SetInfected,
+  type: GameDataType.RPC
+  flag: RPCFlag.SetInfected
   infected: number[]
 }
 
@@ -192,8 +193,8 @@ export interface SetInfectedRPCGameDataPacket {
  * Called when a player is killed by an impostor.
  */
 export interface MurderPlayerRPCGameDataPacket {
-  type: GameDataType.RPC,
-  flag: RPCFlag.MurderPlayer,
+  type: GameDataType.RPC
+  flag: RPCFlag.MurderPlayer
   id: number
 }
 
@@ -201,10 +202,10 @@ export interface MurderPlayerRPCGameDataPacket {
  * When all votes have been placed in a meeting.
  */
 export interface VotingCompleteRPCGameDataPacket {
-  type: GameDataType.RPC,
-  flag: RPCFlag.VotingComplete,
-  states: VoteState[],
-  exiled: number | null,
+  type: GameDataType.RPC
+  flag: RPCFlag.VotingComplete
+  states: VoteState[]
+  exiled: number | null
   tie: boolean
 }
 
@@ -312,6 +313,8 @@ export interface GameOptions {
   emergencyCooldown: number
   confirmEjects: boolean
   visualTasks: boolean
+  anonymousVotes: boolean
+  taskBarUpdates: TaskBarUpdates
 }
 
 /**
@@ -342,8 +345,8 @@ export interface TaskInfo {
  * State of a player's vote board during an emergency meeting or body report.
  */
 export interface VoteState {
-  playerId: number,
-  votedFor: number | null,
-  didReport: boolean,
+  playerId: number
+  votedFor: number | null
+  didReport: boolean
   isDead: boolean
 }

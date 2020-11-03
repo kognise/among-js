@@ -1,18 +1,33 @@
-import { GameOptions, Language, AmongUsMap } from '@among-js/data'
+import {
+  GameOptions,
+  Language,
+  AmongUsMap,
+  TaskBarUpdates
+} from '@among-js/data'
 import { pack, readPacked } from '@among-js/util'
 import ByteBuffer from 'bytebuffer'
 
-const baseLength = 44
+const baseLength = 46
 const packedBaseLength = pack(baseLength)
+
+const supportedVersion = 4
 
 /**
  * Read game options data from a buffer.
- * 
+ *
  * @param buffer Buffer to read from
  */
 export const readGameOptions = (buffer: ByteBuffer): GameOptions => {
   readPacked(buffer) // Length
-  buffer.readByte() // Version
+  const version = buffer.readByte() // Version
+
+  if (supportedVersion > version) {
+    throw new Error(`Could not parse game data of old version ${version}`)
+  }
+  if (version !== supportedVersion) {
+    // Often new game options formats are vaguely backwards-compatible
+    console.warn(`Parsing game data of unsupported version ${version}`)
+  }
 
   const maxPlayers = buffer.readByte()
   const language: Language = buffer.readUint32()
@@ -32,11 +47,14 @@ export const readGameOptions = (buffer: ByteBuffer): GameOptions => {
   const killDistance = buffer.readByte()
   const discussionTime = buffer.readInt32()
   const votingTime = buffer.readInt32()
-  const isDefault = buffer.readByte() === 1
+  const isDefault = buffer.readByte() > 0
 
   const emergencyCooldown = buffer.readByte()
-  const confirmEjects = buffer.readByte() === 1
-  const visualTasks = buffer.readByte() === 1
+  const confirmEjects = buffer.readByte() > 0
+  const visualTasks = buffer.readByte() > 0
+
+  const anonymousVotes = buffer.readByte() > 0
+  const taskBarUpdates: TaskBarUpdates = buffer.readByte()
 
   return {
     maxPlayers,
@@ -57,24 +75,26 @@ export const readGameOptions = (buffer: ByteBuffer): GameOptions => {
     isDefault,
     emergencyCooldown,
     confirmEjects,
-    visualTasks
+    visualTasks,
+    anonymousVotes,
+    taskBarUpdates
   }
 }
 
 /**
  * Serialize game options data into a buffer.
- * 
+ *
  * @remarks
  * The buffer is variable-size, meaning you should not rely on `buffer.capacity()`
  * to get the length. Instead, use `buffer.offset`.
- * 
+ *
  * @param gameOptions Game options data
  */
 export const serializeGameOptions = (gameOptions: GameOptions): ByteBuffer => {
   const buffer = new ByteBuffer(undefined, true)
 
   buffer.append(packedBaseLength)
-  buffer.writeByte(3)
+  buffer.writeByte(supportedVersion)
 
   buffer.writeByte(gameOptions.maxPlayers)
   buffer.readUint32(gameOptions.language)
@@ -99,6 +119,9 @@ export const serializeGameOptions = (gameOptions: GameOptions): ByteBuffer => {
   buffer.writeByte(gameOptions.emergencyCooldown)
   buffer.writeByte(gameOptions.confirmEjects ? 1 : 0)
   buffer.writeByte(gameOptions.visualTasks ? 1 : 0)
+
+  buffer.writeByte(gameOptions.anonymousVotes ? 1 : 0)
+  buffer.writeByte(gameOptions.taskBarUpdates)
 
   return buffer
 }

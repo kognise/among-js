@@ -4,7 +4,7 @@ import ByteBuffer from 'bytebuffer'
 
 /**
  * Read a game data object from a buffer.
- * 
+ *
  * @param buffer Buffer to read from
  */
 export const readGameData = (buffer: ByteBuffer): GameData => {
@@ -29,7 +29,7 @@ export const readGameData = (buffer: ByteBuffer): GameData => {
 
   for (let i = 0; i < taskCount; i++) {
     const type: TaskType = readPacked(buffer)
-    const complete = buffer.readByte() === 1
+    const complete = buffer.readByte() > 0
     tasks.push({ type, complete })
   }
 
@@ -49,11 +49,11 @@ export const readGameData = (buffer: ByteBuffer): GameData => {
 
 /**
  * Serialize a game data object into a buffer.
- * 
+ *
  * @remarks
  * The buffer is variable-size, meaning you should not rely on `buffer.capacity()`
  * to get the length. Instead, use `buffer.offset`.
- * 
+ *
  * @param gameData Game data
  */
 export const serializeGameData = (gameData: GameData): ByteBuffer => {
