@@ -1,6 +1,6 @@
 {
   "name": "@among-js/sus",
-  "version": "0.1.13",
+  "version": "0.2.0",
   "description": "A clean wrapper for writing Among Us bots",
   "author": "Felix Mattick <felix.mattick@gmail.com>",
   "scripts": {
@@ -17,10 +17,10 @@
     "dist"
   ],
   "dependencies": {
-    "@among-js/data": "^0.1.13",
-    "@among-js/hazel": "^0.1.13",
-    "@among-js/packets": "^0.1.13",
-    "@among-js/util": "^0.1.12",
+    "@among-js/data": "^0.2.0",
+    "@among-js/hazel": "^0.2.0",
+    "@among-js/packets": "^0.2.0",
+    "@among-js/util": "^0.2.0",
     "bytebuffer": "^5.0.1",
     "tslib": "^2.0.0"
   },
