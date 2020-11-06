@@ -129,6 +129,17 @@ const parseRPCGameDataPacket = (
       }
     }
 
+    case RPCFlag.SetStartCounter: {
+      const sequence = readPacked(buffer)
+      const seconds = buffer.readByte()
+      return {
+        type: GameDataType.RPC,
+        flag,
+        sequence,
+        seconds
+      }
+    }
+
     default: {
       if (process.env.AJ_DEBUG === 'yes')
         console.warn(`RPC packet of type ${prettyRPCFlag(flag)} wasn't parsed`)
@@ -206,6 +217,15 @@ const genericParseGameDataPayloadPacket = (
 
       case GameDataType.Spawn: {
         parts.push(parseSpawnGameDataPacket(buffer))
+        break
+      }
+
+      case GameDataType.Ready: {
+        const clientId = readPacked(buffer)
+        parts.push({
+          type: GameDataType.Ready,
+          clientId
+        })
         break
       }
 

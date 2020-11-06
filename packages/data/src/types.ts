@@ -120,6 +120,18 @@ export type GameDataPacket =
   | SpawnGameDataPacket
   | DataGameDataPacket
   | SceneChangeGameDataPacket
+  | ReadyGameDataPacket
+
+/**
+ * Ready packet. Sent by clients when the game is starting.
+ * {@link https://wiki.weewoo.net/wiki/Protocol#7_-_Ready}
+ * 
+ * Very complex and difficult to understand.
+ */
+export interface ReadyGameDataPacket {
+  type: GameDataType.Ready
+  clientId: number
+}
 
 /**
  * Packet to spawn an entity with a list of components. {@link https://wiki.weewoo.net/wiki/Protocol#4_-_Spawn}
@@ -169,6 +181,17 @@ export type RPCGameDataPacket =
   | VotingCompleteRPCGameDataPacket
   | SetInfectedRPCGameDataPacket
   | MurderPlayerRPCGameDataPacket
+  | SetStartCounterRPCGameDataPacket
+
+/**
+ * Set the timer until the game starts.
+ */
+export interface SetStartCounterRPCGameDataPacket {
+  type: GameDataType.RPC,
+  flag: RPCFlag.SetStartCounter,
+  sequence: number,
+  seconds: number
+}
 
 /**
  * Sync game options between clients.
@@ -277,6 +300,7 @@ export interface UnparsedRPCGameDataPacket {
     | RPCFlag.VotingComplete
     | RPCFlag.SetInfected
     | RPCFlag.MurderPlayer
+    | RPCFlag.SetStartCounter
   >
   netId: number
   data: ByteBuffer

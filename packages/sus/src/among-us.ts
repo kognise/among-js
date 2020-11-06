@@ -43,6 +43,11 @@ export declare interface AmongUsSocket {
     event: 'playerMove',
     cb: (netId: number, position: Vector2, velocity: Vector2) => void
   ): this
+
+  on(
+    event: 'startCounter',
+    cb: (seconds: number) => void
+  ): this
 }
 
 /**
@@ -78,7 +83,7 @@ export class AmongUsSocket extends EventEmitter {
   /**
    * Whether or not the client is ready to move around and perform actions.
    */
-  ready = false
+  isReady = false
 
   /**
    * @param name Username to login with
@@ -206,7 +211,7 @@ export class AmongUsSocket extends EventEmitter {
    * @param color The color to spawn with, from `@among-js/data`
    */
   async spawn(color: PlayerColor) {
-    const promise = new Promise(resolve => {
+    const promise = new Promise((resolve) => {
       this.s.on('message', async buffer => {
         const payloads = parsePayloads(buffer)
 
@@ -257,8 +262,19 @@ export class AmongUsSocket extends EventEmitter {
                   part.position,
                   part.velocity
                 )
+              } else if (part.type === GameDataType.RPC) {
+                if (part.flag === RPCFlag.SetStartCounter) {
+                  // TODO: Account for sequence
+                  this.emit(
+                    'startCounter',
+                    part.seconds
+                  )
+                }
               }
             }
+          } else if (payload.type === PayloadType.StartGame) {
+            console.log('Game starting, sending ready packet')
+            await this.ready()
           }
         }
       })
@@ -283,7 +299,7 @@ export class AmongUsSocket extends EventEmitter {
     )
 
     await promise
-    this.ready = true
+    this.isReady = true
   }
 
   /**
@@ -308,6 +324,27 @@ export class AmongUsSocket extends EventEmitter {
               sequence: ++this.moveSequence,
               position: position,
               velocity: velocity
+            }
+          ]
+        }
+      ])
+    )
+  }
+
+  /**
+   * Send a ready packet. This took years to implement so please use carefully.
+   */
+  async ready() {
+    await this.s.sendReliable(
+      PacketType.Reliable,
+      generatePayloads([
+        {
+          type: PayloadType.GameData,
+          code: v2CodeToNumber(this.game!.code),
+          parts: [
+            {
+              type: GameDataType.Ready,
+              clientId: this.game!.playerClientId
             }
           ]
         }

@@ -4,8 +4,8 @@ const consola = require('consola')
 
 consola.wrapAll()
 
-const code = 'KAGEEQ'
-const username = 'hi'
+const code = 'PXKXFF'
+const username = 'asdas'
 const color = PlayerColor.Orange
 
 const s = new AmongUsSocket(username)
@@ -22,7 +22,7 @@ s.on('playerMove', async (netId, position, velocity) => {
 
 
 ;(async () => {
-  await s.connect(22023, matchmakingServers.NA[1])
+  await s.connect(22023, matchmakingServers.NA[2])
   consola.info(`Connected to server as ${username}`)
 
   const joined = await s.joinGame(code)

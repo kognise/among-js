@@ -160,6 +160,14 @@ const generateRPCGameDataPacket = (packet: RPCGameDataPacket): ByteBuffer => {
       return buffer
     }
 
+    case RPCFlag.SetStartCounter: {
+      const packedSequence = pack(packet.sequence)
+      const buffer = new ByteBuffer(packedSequence.length + 1, true)
+      buffer.writeBytes(packedSequence)
+      buffer.writeByte(packet.seconds)
+      return buffer
+    }
+
     default: {
       if (process.env.AJ_DEBUG === 'yes')
         console.warn(
@@ -195,6 +203,17 @@ const genericGameDataPacketSwitch = (part: GameDataPacket): ByteBuffer => {
 
     case GameDataType.SceneChange: {
       return generateSceneChangeGameDataPacket(part)
+    }
+
+    case GameDataType.Ready: {
+      const packedClientId = pack(part.clientId)
+      const buffer = new ByteBuffer(3 + packedClientId.length, true)
+
+      buffer.writeInt16(packedClientId.length)
+      buffer.writeByte(part.type)
+      buffer.append(packedClientId)
+      
+      return buffer
     }
 
     default: {
