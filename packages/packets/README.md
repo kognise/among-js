@@ -18,6 +18,6 @@ For more technical information on the protocol you may be interested in reading 
 
 You may notice that game codes are stored as numbers. This is how Among Us internally stores them and allows for much better normalization.
 
-Specifically, version 2 (6 character) codes are represented as large negative numbers which is generated through a complex algorithm that is out of the scope of this specific package. To convert a v2 code into something this package can understand use the `v2CodeToNumber` function which is exported from `@among-us/util`.
+Specifically, version 2 (6 character) codes are represented as large negative numbers which is generated through a complex algorithm that is out of the scope of this specific package. To convert a v2 code into something this package can understand use the `v2CodeToNumber` function which is exported from `@among-js/util`.
 
 For more in-depth information, read [this wiki page](https://wiki.weewoo.net/wiki/Game_Codes).
