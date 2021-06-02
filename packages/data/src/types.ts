@@ -121,6 +121,7 @@ export type GameDataPacket =
   | DataGameDataPacket
   | SceneChangeGameDataPacket
   | ReadyGameDataPacket
+  | DespawnGameDataPacket
 
 /**
  * Ready packet. Sent by clients when the game is starting.
@@ -142,6 +143,14 @@ export interface SpawnGameDataPacket {
   ownerId: number
   flags: number
   components: GameComponent[]
+}
+
+/**
+ * Packet to despawn a previously spawn entity {@link https://wiki.weewoo.net/wiki/Protocol#5_-_Despawn}
+ */
+export interface DespawnGameDataPacket {
+  type: GameDataType.Despawn
+  netId: number
 }
 
 /**

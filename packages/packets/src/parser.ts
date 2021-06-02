@@ -3,6 +3,7 @@ import {
   RPCFlag,
   GameDataType,
   SpawnGameDataPacket,
+  DespawnGameDataPacket,
   GameComponent,
   DataGameDataPacket,
   GameDataPayloadPacket,
@@ -181,6 +182,15 @@ const parseSpawnGameDataPacket = (buffer: ByteBuffer): SpawnGameDataPacket => {
   }
 }
 
+const parseDespawnGameDataPacket = (buffer: ByteBuffer): DespawnGameDataPacket => {
+  const netId = readPacked(buffer)
+
+  return {
+    type: GameDataType.Despawn,
+    netId,
+  }
+}
+
 const parseDataGameDataPacket = (
   buffer: ByteBuffer,
   netId: number
@@ -217,6 +227,11 @@ const genericParseGameDataPayloadPacket = (
 
       case GameDataType.Spawn: {
         parts.push(parseSpawnGameDataPacket(buffer))
+        break
+      }
+
+      case GameDataType.Despawn: {
+        parts.push(parseDespawnGameDataPacket(buffer))
         break
       }
 
