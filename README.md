@@ -1,3 +1,9 @@
+> 🚩 **This project is archived!** 🚩
+> 
+> *This was really fun! I enjoyed reverse-engineering Among Us and learning a lot of new things. Right now I don't play the game anymore and I don't find it fun to work on this anymore. Luckily, it isn't yet developed enough that anyone depends on it.*
+>
+> *While this definitely was and would've been the best Among Us JS library, you'll have to find alternatives.*
+
 ![Among JS](https://raw.githubusercontent.com/kognise/among-js/main/banner.svg)
 
 ## About Among JS
