@@ -117,7 +117,7 @@ export class AmongUsSocket extends EventEmitter {
   }
 
   /**
-   * Shitty code to attempt joining a game. This will respond with one of three states:
+   * Fantastic code to attempt joining a game. This will respond with one of three states:
    *   - Joined, meaning no further action must be taken
    *   - Redirect, meaning the current socket should be scrapped and the join should be retried on the given ip and port
    *   - Error, meaning it should throw an error
